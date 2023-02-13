@@ -33,6 +33,55 @@ The abstract should briefly summarize the contents of the paper in
 \keywords{First keyword  \and Second keyword \and Another keyword.}
 \end{abstract}
 %--------------------------------------------------------------------------------------------------
+Just spitting out ideas here.
+
+\begin{enumerate}
+\item Language for NTF problems. NXF and NHF
+
+\item Language for NTF solutions.
+      \begin{enumerate}
+      \item Derivations the same as for classical
+      \item Kripke interpretations
+      \end{enumerate}
+
+\item Utility tools
+      \begin{enumerate}
+      \item Parsers and printers: tptp-utils-app, TPTP4X
+      \item Language transformers
+      \end{enumerate}
+
+\item Language transformers
+      \begin{enumerate}
+      \item NTF2THF - logic-embedding-app.jar
+      \item NXF2TXF (coming from Alex)
+      \item Short2Long (coming from Alex)
+      \item TPTP2KSP (coming from Geoff)
+      \end{enumerate}
+
+\item Reasoning tools
+      \begin{enumerate}
+      \item Provers
+            \begin{enumerate}
+            \item  Native: Leo-III (but really it's via NTF2THF)
+            \item Via NTF2THF: Any THF prover, e.g., Vampire, E, cvc5, Satallax, etc.
+            \item Via TPTP2KSP: Claudia's tool, others?
+            \end{enumerate}
+      \item Model finders
+            \begin{enumerate}
+            \item Native: None (Leo-III in SAT mode does nothing)
+            \item Via NTF2THF: Any THF model finder, e.g, Nitpick, cvc5, LEO-II, Satallax, Vampire
+            \end{enumerate}
+      \end{enumerate}
+
+\item Solution analysers
+      \begin{enumerate}
+      \item GDV - Geoff's Derivation Verifier (needs to be extended?)
+      \item AGMV - Alex and Geoff's Model Verifier: Via TXF2TFF
+      \item IDV - Interactive Derivation Verifier (for when we have NTF proof output)
+      \item Alex's student's interpretation visualizer
+      \end{enumerate}
+
+\end{enumerate}
 %--------------------------------------------------------------------------------------------------
 \bibliographystyle{splncs04}
 \bibliography{Bibliography}

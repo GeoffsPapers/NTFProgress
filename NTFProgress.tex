@@ -1,0 +1,448 @@
+\documentclass[runningheads]{llncs}
+
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{setspace}
+\usepackage{verbatim}
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+
+\begin{document}
+
+\title{Progress in the Development of\\ Non-classical Logics in the TPTP World}
+\titlerunning{The Non-classical TPTP World}
+
+\author{Alexander Steen\inst{1}\orcidID{0000-0001-8781-9462} 
+\and
+Geoff Sutcliffe\inst{2}\orcidID{0000-0001-9120-3927}}
+\authorrunning{A. Steen, G. Sutcliffe}
+\institute{University of Greifswald, Germany \\
+\email{alexander.steen@uni-greifswald.de}
+% \url{https://www.alexandersteen.de} 
+\and
+University of Miami, USA \\
+\email{geoff@cs.miami.edu}
+% \url{https://www.cs.miami.edu/home/geoff/} 
+}
+
+\maketitle
+%--------------------------------------------------------------------------------------------------
+\begin{abstract}
+The abstract should briefly summarize the contents of the paper in
+150--250 words.
+
+\keywords{First keyword  \and Second keyword \and Another keyword.}
+\end{abstract}
+%--------------------------------------------------------------------------------------------------
+\section{Introduction}
+\label{Introduction}
+
+The TPTP World \cite{Sut17} is a well established infrastructure that supports research, 
+development, and deployment of Automated Theorem Proving (ATP) systems.
+The TPTP World includes the TPTP problem library,
+% \cite{Sut09}, 
+the TSTP solution library,
+% \cite{Sut10}, 
+standards for writing ATP problems and reporting ATP solutions,
+% \cite{SS+06,Sut08-KEAPPA}, 
+tools and services for processing ATP problems and solutions,
+% \cite{Sut10}, 
+and it supports the CADE ATP System Competition (CASC).
+% \cite{Sut16}.
+Various parts of the TPTP World have been deployed in a range of applications,
+in both academia and industry.
+The web page \href{https://www.tptp.org}{\tt https://www.tptp.org} provides access to all 
+components.
+
+The TPTP languages \cite{Sut22-IGPL} are one of the keys to the success of the TPTP World.
+The languages are used for writing both TPTP problems and TSTP solutions.
+Originally the TPTP World supported only first-order clause normal form (CNF) \cite{SS98-JAR}.
+Over the years full first-order form (FOF) \cite{Sut09}, typed-first order form (TFF) 
+\cite{SS+12,BP13-TFF1}, and typed higher-order form (THF) \cite{SB10,KSR16} have been added.
+The TFF and THF languages include constructs for arithmetic.
+The development of standards for ATP systems for first- and higher-order logic has traditionally 
+focused mostly on classical logic, while many real-world applications often also require 
+non-classical reasoning. 
+These applications include artificial intelligence (e.g., knowledge representation, planning, 
+multi-agent systems), philosophy (e.g., formal ethics, metaphysics), natural language semantics 
+(e.g., generalized quantifiers, modalities), and computer science (e.g., software and hardware 
+verification).
+This paper describes the latest extension of the TPTP World, providing languages and
+infrastructure for reasoning in non-classical logics \cite{Pri08,Gob01}, via the (new)
+non-classical typed extended first-order (NXF) and non-classical typed higher-order (NHF) 
+languages.
+Problems, solutions, and the logic to be used for reasoning, are expressed in the same language 
+framework.
+In this paper we exemplify the languages using modal logics \cite{BBW06}.
+
+\paragraph{Paper structure.}~\\
+Section~\ref{TPTPLanguages} reviews the general structure of the TPTP languages and
+
+%--------------------------------------------------------------------------------------------------
+\section{The TPTP Languages}
+\label{TPTPLanguages}
+
+The TPTP languages are human-readable, machine-parsable, flexible, and extensible languages,
+suitable for writing both problems and solutions.
+The new TPTP languages described in this paper support the representation of problems and
+solutions in non-classical logics\footnote{%
+The development of TPTP World standards for writing ATP solutions beyond common
+derivations and models is still necessary -- see, e.g., \cite{OS10}}.
+In this section the general structure of the TPTP languages is reviewed, and key features of
+the TXF and THF languages that underlie the new non-classical languages are presented.
+The syntax of the TPTP languages is available in an extended BNF \cite{VS06}.\footnote{%
+\label{footnote:tptp}
+\href{https://www.tptp.org/TPTP/SyntaxBNF.html}{\tt https://www.tptp.org/TPTP/SyntaxBNF.html}}
+
+%--------------------------------------------------------------------------------------------------
+\subsection{The Structure of the TPTP Languages}
+\label{Structure}
+
+The top-level building blocks of the TPTP languages are {\em annotated formulae}.
+An annotated formula has the form:\\
+\hspace*{1cm}{\em language}{\tt (}{\em name}{\tt ,} {\em role}{\tt ,} {\em formula}{\tt ,} 
+{\em source}{\tt ,} {\em useful\_info}{\tt ).} \\ 
+The {\em language}s supported are clause normal form ({\tt cnf}), first-order form ({\tt fof}), 
+typed first-order form ({\tt tff}), and typed higher-order form ({\tt thf}).
+The {\em name} assigns a (unique) identifier to each formula, for referring to it.
+The {\em role}, e.g., {\tt axiom}, {\tt lemma}, {\tt conjecture}, defines the use of the formula 
+in an ATP system.
+In the {\em formula}, terms and atoms follow Prolog conventions.
+The TPTP language also supports interpreted symbols, including: 
+''the type of types'' {\tt \$tType};
+types for individuals {\tt \$i} ($\iota$) and booleans {\tt \$o} ($o$);
+types for numbers {\tt \$int} (integers), {\tt \$rat} (rationals), and {\tt \$real} (reals);
+numeric constants,
+arithmetic predicates and functions,
+and
+the truth constants {\tt \$true} and {\tt \$false}.
+An example annotated first-order formula supplied from a file named {\tt SET006+1.ax}, is~\ldots
+\[
+\begin{minipage}{\textwidth}
+\begin{verbatim}
+    fof(union,axiom,
+        ( ! [X,A,B] :
+            ( member(X,union(A,B))
+          <=> ( member(X,A) | member(X,B) ) ),
+        file('SET006+0.ax',union),
+        [description('Definition of union'), relevance(0.9)]).
+\end{verbatim}
+\end{minipage}
+\]
+
+%--------------------------------------------------------------------------------------------------
+\subsection{The Existing TFF, TXF, and THF Languages}
+\label{TFFTXFTHF}
+
+The typed first-order form (TFF) language extends FOF with types and type declarations.
+The monomorphic variant of TFF is called TF0.
+Figure~\ref{TF0Example} shows example types and a formula in TF0.
+The typed higher-order form (THF) extends TFF with higher-order notions, including the
+curried form of type declarations, lambda terms with a lambda 
+binder {\tt \verb|^|} for $\lambda$, and application with {\tt @}.
+The monomorphic variant of THF is called TH0.
+Figure~\ref{TH0Example} shows example types and formulae in TH0.
+The polymorphic variants of TFF and THF, called TF1 \cite{BP13-TFF1} and TH1 \cite{KSR16},
+add type constructors, type variables, and polymorphic symbols.
+The monomorphic variants are currently more widespread than the polymorphic variants.
+
+\begin{figure}[htbp]
+\small
+\setstretch{0.9}
+\begin{verbatim}
+tff(dog_decl,type,      dog: $tType ).
+tff(human_decl,type,    human: $tType ).
+tff(owner_of_decl,type, owner_of: dog > human ).
+tff(bit_decl,type,      bit: (dog * human * $int) > $o ).
+tff(hates_decl,type,    hates: (human * human) > $o ).
+
+tff(hate_the_multi_biter_dog,axiom,
+    ! [D: dog,H: human,N: $int] :
+      ( ( H != owner_of(D) & bit(D,H,N) & $greater(N,1) )
+     => hates(H,owner_of(D)) ) ).
+\end{verbatim}
+\caption{TF0 example}
+\label{TF0Example}
+\end{figure}
+
+\begin{figure}[htbp]
+\small
+\setstretch{0.9}
+\begin{verbatim}
+thf(dog_decl,type,      dog: $tType ).
+thf(human_decl,type,    human: $tType ).
+thf(owner_of_decl,type, owner_of: dog > human ).
+thf(owns_decl,type,     owns: human > dog > $o ).
+thf(bit_decl,type,      bit: dog > human > $int > $o ).
+thf(hates_decl,type,    hates: human > human > $o ).
+
+thf(owns_defn,definition,
+    ( owns = ( ^ [H: human,D: dog] : ( H = ( owner_of @ D ) ) ) ) ).
+
+thf(hate_the_multi_biter_dog,axiom,
+    ! [D: dog,H: human,N: $int] :
+      ( ~ ( owns @ H @ D ) & ( bit @ D @ H @ N ) & ( $greater @ N @ 1 ) 
+     => ( hates @ H @ ( owner_of @ D ) ) ) ).
+\end{verbatim}
+\caption{TH0 example}
+\label{TH0Example}
+\end{figure}
+
+The typed extended first-order form (TXF) \cite{SK18} augments TFF with FOOL logic \cite{KKV15} 
+constructs:
+formulae of type {\tt \$o} as terms; 
+variables of type {\tt \$o} as formulae;
+tuple types and tuple terms;
+conditional (if-then-else) and let (let-defn-in) expressions.
+TXF provides the basis for the non-classical typed extended first-order form (NXF).
+Figure~\ref{TX0Example} shows example types and formulae in TX0.
+In parallel to the development of TXF, THF has been revised to have the same structures as TXF 
+for tuples, conditional expressions, and let expressions. 
+The revised THF provides the basis for the non-classical typed higher-order (NHF).
+
+\begin{figure}[htbp]
+\small
+\setstretch{0.9}
+\begin{verbatim}
+tff(inhabitant_decl,type,inhabitant: $tType ).
+tff(is_knight_decl,type,is_knight: inhabitant > $o ).
+tff(is_knave_decl,type,is_knave: inhabitant > $o ).
+tff(says_decl,type,says: ( inhabitant * $o ) > $o ).
+
+tff(knights_xor_knaves,axiom,
+    ! [I: inhabitant] : ( is_knight(I) <~> is_knave(I) ) ).
+tff(knights_tell_truth,axiom,
+    ! [I: inhabitant,S: $o] : ( ( is_knight(I) & says(I,S) ) => S ) ).
+\end{verbatim}
+\caption{TX0 example}
+\label{TX0Example}
+\end{figure}
+
+%--------------------------------------------------------------------------------------------------
+\subsection{The TPTP Non-Classical Languages}
+\label{NTFLanguages}
+
+The non-classical typed extended first-order form (NXF) and non-classical typed higher-order 
+form (NHF) languages are the new TPTP languages for non-classical logics.
+NXF and NHF add a new interpreted functor-like connective form
+{\tt \verb|{|}{\em connective\_name}{\tt \verb|}|}.
+A {\em connective\_name} may optionally be parameterized to reflect more complex 
+non-classical connectives, e.g., in multi-modals logics where the modal operators are indexed.
+In NXF the non-classical connectives are applied in a mixed applied/functional style, with the 
+connectives applied to a {\tt ()}ed list of arguments.
+In NHF the non-classical connectives are applied in higher-order style.
+Figure~\ref{NX0Example} shows example types and alethic modal logic formulae in NX0.
+% Augmenting the examples from above, using the box and diamond connectives from normal modal 
+% logic, and the necessary and possible connectives from alethic modal logic~\ldots 
+%\[
+%\begin{minipage}{\textwidth}
+%\small
+%\begin{verbatim}
+%    tff(jon_says_necessary_truth,axiom,
+%        ! [S: $o] : ( says(jon,S) => {$box} @ (S) ) ).
+%
+%    tff(observers_says_possible_dog_bit_owner,axiom,
+%        {$possible(#observer)} @ (? [D: dog] : bit(D,owner_of(D),1)) ).
+%
+%    thf(possible_jon_owns_biter,axiom,
+%        ! [D: dog] :
+%          ( ( bit @ D @ jon @ 1 )
+%         => ( {$dia} @ ( owns @ jon @ D ) ) ) ).
+%         
+%    thf(mother_of_jon_says_necessary_he_must_feed_odie,axiom,
+%        says @ jon @ ({$necessary(#mother)} @ (feeds @ jon @ odie)) ).
+%\end{verbatim}
+%\end{minipage}
+%\]
+
+In non-classical logics the same language can be used for formulae while different logics are 
+used for reasoning.
+It is therefore necessary to provide \mbox{(meta-)}information that specifies the
+logic to be used.
+A new kind of TPTP annotated formula has been introduced for this, with the role \texttt{logic},
+and a ``logic specification'' as the formula.
+A logic specification consists of a defined logic (family) name identified with a list of 
+properties.
+Figure~\ref{NX0Example} shows a logic specification in NX0.
+
+%A simple example from modal logic is~\ldots
+%\[
+%\begin{minipage}{\textwidth}
+%\small
+%\begin{verbatim}
+%   tff(simple_spec,logic, 
+%       $modal == [
+%         $domains == [ $constant, some_user_type == $varying ],
+%         $designations == $rigid,
+%         $terms == $local,
+%         $modalities == $modal_system_S5 ] ).
+%\end{verbatim}
+%\end{minipage}
+%\]
+
+\begin{figure}[htbp]
+\small
+\setstretch{0.9}
+\begin{verbatim}
+tff(semantics,logic,
+    $alethic_modal ==
+      [ $domains == $constant,
+        $rigidity == $rigid,
+        $locality == $local,
+        $modalities == $modal_system_M ] ).
+
+tff(person_decl,type,person: $tType).
+tff(product_decl,type,product: $tType).
+tff(alex_decl,type,alex: person).
+tff(chris_decl,type,chris: person).
+tff(leo_decl,type,leo: product).
+tff(work_hard_decl,type,work_hard: (person * product) > $o).
+tff(gets_rich_decl,type,gets_rich: person > $o).
+
+tff(work_hard_to_get_rich,axiom,
+    ! [P: person] :
+      ( ? [R: product] : work_hard(P,R)
+      => {$possible} @ ( gets_rich(P) ) ) ).
+
+tff(not_all_get_rich,axiom,
+    ~ ? [P: person] : ({$necessary} @ (gets_rich(P)) ) ).
+
+tff(alex_works_on_leo,axiom,
+    work_hard(alex,leo) ).
+
+tff(chris_works_on_leo,axiom,
+    work_hard(chris,leo) ).
+
+tff(only_alex_gets_rich,conjecture,
+    ( {$possible} @ (gets_rich(alex)) 
+    & {$possible} @ (~ gets_rich(chris)) ) ).
+\end{verbatim}
+\caption{NX0 example}
+\label{NX0Example}
+\end{figure}
+
+%--------------------------------------------------------------------------------------------------
+\subsection{Writing Non-classical Problems and Solutions}
+\label{NTFProblemsSolutions}
+
+The NXF and NHF languages can be used to write problems that are not naturally expressed in
+classical logics.
+Figure~\ref{NXFExample} shows a NX0 example problem.
+The TPTP format for derivations \cite{SS+06} can immediately be used for writing derivations in
+non-classical logic.
+The new TPTP format for interpretations can be used to write Kripke models.
+Figure~\ref{NX0Kripke} shows the worlds and the first world's interpretation for a Kripke
+model in NX0, for the problem in Figure~\ref{NX0Example}.
+
+\begin{figure}[htbp]
+\small
+\setstretch{0.9}
+\begin{verbatim}
+tff(person_decl,type,    person: $tType).
+tff(product_decl,type,   product: $tType).
+tff(alex_decl,type,      alex: person).
+tff(chris_decl,type,     chris: person).
+tff(leo_decl,type,       leo: product).
+tff(work_hard_decl,type, work_hard: (person * product) > $o).
+tff(gets_rich_decl,type, gets_rich: person > $o).
+
+tff(w1_decl,type,w1:     $ki_world).
+tff(w2_decl,type,w2:     $ki_world).
+tff(d_person_type,type,  d_person: $tType).
+tff(d2person_decl,type,  d2person: d_person > person ).
+tff(d_alex_decl,type,    d_alex: d_person).
+tff(d_chris_decl,type,   d_chris: d_person).
+tff(d_product_type,type, d_product: $tType).
+tff(d2product_decl,type, d2product: d_product > product ).
+tff(d_leo_decl,type,     d_leo: d_product).
+
+tff(leo_workers,interpretation,
+    ( ( ! [W: $ki_world] : ( W = w1 | W = w2 )
+      & $distinct(w1,w2)
+      & $ki_local_world = w1
+      & $ki_accessible(w1,w1)     %----Logic is M
+      & $ki_accessible(w2,w2)
+      & $ki_accessible(w1,w2) )
+    & ( $ki_world_is(w1,
+        ( ( ! [P: person] : ? [DP: d_person] : P = d2person(DP)
+          & ! [DP: d_person] : ( DP = d_alex | DP = d_chris )
+          & $distinct(d_alex,d_chris)
+          & ? [DP: d_person] : ( DP = d_alex )
+          & ? [DP: d_person] : ( DP = d_chris )
+          & ! [DP1: d_person,DP2: d_person] : 
+              ( d2person(DP1) = d2person(DP2) => DP1 = DP2 )
+          & ! [P: product] : ? [DP: d_product] : P = d2product(DP)
+          & ! [DP: d_product] : DP = d_leo
+          & ? [DP: d_product] : DP = d_leo
+          & ! [DP1: d_product,DP2: d_product] :
+              ( d2product(DP1) = d2product(DP2) => DP1 = DP2 ) )
+        & ( alex = d2person(d_alex)
+          & chris = d2person(d_chris)
+          & leo = d2product(d_leo) )
+        & ( work_hard(d2person(d_alex),d2product(d_leo))
+          & work_hard(d2person(d_chris),d2product(d_leo))
+          & ~ gets_rich(d2person(d_alex))
+          & gets_rich(d2person(d_chris)) ) ) ) )
+\end{verbatim}
+\caption{NX0 Kripke model example}
+\label{NX0Kripke}
+\end{figure}
+At the time of writing there are no ATP systems that can output proofs or Kripke models
+in TPTP format for non-classical logic problems (hopefully given in TPTP format).
+See Section~\ref{ATPSystems} for more information about non-classical logic ATP systems' 
+capabilities.
+
+%--------------------------------------------------------------------------------------------------
+\section{Utility Tools}
+\label{UtilityTools}
+
+\begin{enumerate}
+\item Utility tools
+      \begin{enumerate}
+      \item Parsers and printers: tptp-utils-app, TPTP4X
+      \item Language transformers
+      \end{enumerate}
+
+\item Language transformers
+      \begin{enumerate}
+      \item NTF2THF - logic-embedding-app.jar
+      \item NXF2TXF (coming from Alex)
+      \item Short2Long (coming from Alex)
+      \item TPTP2KSP and KSP2TPTP
+      \end{enumerate}
+\end{enumerate}
+
+%--------------------------------------------------------------------------------------------------
+\section{ATP Systems}
+\label{ATPSystems}
+
+      \begin{enumerate}
+      \item Provers
+            \begin{enumerate}
+            \item  Native: Leo-III (but really it's via NTF2THF)
+            \item Via NTF2THF: Any THF prover, e.g., Vampire, E, cvc5, Satallax, etc.
+            \item Via TPTP2KSP: Claudia's tool, others?
+            \end{enumerate}
+      \item Model finders
+            \begin{enumerate}
+            \item Native: None (Leo-III in SAT mode does nothing)
+            \item Via NTF2THF: Any THF model finder, e.g, Nitpick, cvc5, LEO-II, Satallax, Vampire
+            \end{enumerate}
+      \end{enumerate}
+
+%--------------------------------------------------------------------------------------------------
+\section{Solution Analysers}
+\label{SolutionAnalysers}
+
+      \begin{enumerate}
+      \item GDV - Geoff's Derivation Verifier (needs to be extended?)
+      \item AGMV - Alex and Geoff's Model Verifier: Via TXF2TFF
+      \item IDV - Interactive Derivation Verifier (for when we have NTF proof output)
+      \item Alex's student's interpretation visualizer
+      \end{enumerate}
+%--------------------------------------------------------------------------------------------------
+\bibliographystyle{splncs04}
+\bibliography{Bibliography}
+%--------------------------------------------------------------------------------------------------
+\end{document}

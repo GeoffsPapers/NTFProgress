@@ -80,24 +80,8 @@ In this paper we exemplify the languages using modal logics \cite{BBW06}.
 Section~\ref{TPTPLanguages} reviews the general structure of the TPTP languages and
 
 %--------------------------------------------------------------------------------------------------
-\section{The TPTP Languages}
+\section{The Classical TPTP Languages}
 \label{TPTPLanguages}
-
-The TPTP languages are human-readable, machine-parsable, flexible, and extensible languages,
-suitable for writing both problems and solutions.
-The new TPTP languages described in this paper support the representation of problems and
-solutions in non-classical logics\footnote{%
-The development of TPTP World standards for writing ATP solutions beyond common
-derivations and models is still necessary -- see, e.g., \cite{OS10}}.
-In this section the general structure of the TPTP languages is reviewed, and key features of
-the TXF and THF languages that underlie the new non-classical languages are presented.
-The syntax of the TPTP languages is available in an extended BNF \cite{VS06}.\footnote{%
-\label{footnote:tptp}
-\href{https://www.tptp.org/TPTP/SyntaxBNF.html}{\tt https://www.tptp.org/TPTP/SyntaxBNF.html}}
-
-%--------------------------------------------------------------------------------------------------
-\subsection{The Structure of the TPTP Languages}
-\label{Structure}
 
 The top-level building blocks of the TPTP languages are {\em annotated formulae}.
 An annotated formula has the form:\\
@@ -131,63 +115,59 @@ An example annotated first-order formula supplied from a file named {\tt SET006+
 \end{minipage}
 \]
 
-%--------------------------------------------------------------------------------------------------
-\subsection{The Existing TFF, TXF, and THF Languages}
-\label{TFFTXFTHF}
-
 The typed first-order form (TFF) language extends FOF with types and type declarations.
 The monomorphic variant of TFF is called TF0.
-Figure~\ref{TF0Example} shows example types and a formula in TF0.
+% Figure~\ref{TF0Example} shows example types and a formula in TF0.
 The typed higher-order form (THF) extends TFF with higher-order notions, including the
 curried form of type declarations, lambda terms with a lambda 
 binder {\tt \verb|^|} for $\lambda$, and application with {\tt @}.
 The monomorphic variant of THF is called TH0.
-Figure~\ref{TH0Example} shows example types and formulae in TH0.
+% Figure~\ref{TH0Example} shows example types and formulae in TH0.
 The polymorphic variants of TFF and THF, called TF1 \cite{BP13-TFF1} and TH1 \cite{KSR16},
 add type constructors, type variables, and polymorphic symbols.
 The monomorphic variants are currently more widespread than the polymorphic variants.
 
-\begin{figure}[htbp]
-\small
-\setstretch{0.9}
-\begin{verbatim}
-tff(dog_decl,type,      dog: $tType ).
-tff(human_decl,type,    human: $tType ).
-tff(owner_of_decl,type, owner_of: dog > human ).
-tff(bit_decl,type,      bit: (dog * human * $int) > $o ).
-tff(hates_decl,type,    hates: (human * human) > $o ).
-
-tff(hate_the_multi_biter_dog,axiom,
-    ! [D: dog,H: human,N: $int] :
-      ( ( H != owner_of(D) & bit(D,H,N) & $greater(N,1) )
-     => hates(H,owner_of(D)) ) ).
-\end{verbatim}
-\caption{TF0 example}
-\label{TF0Example}
-\end{figure}
-
-\begin{figure}[htbp]
-\small
-\setstretch{0.9}
-\begin{verbatim}
-thf(dog_decl,type,      dog: $tType ).
-thf(human_decl,type,    human: $tType ).
-thf(owner_of_decl,type, owner_of: dog > human ).
-thf(owns_decl,type,     owns: human > dog > $o ).
-thf(bit_decl,type,      bit: dog > human > $int > $o ).
-thf(hates_decl,type,    hates: human > human > $o ).
-
-thf(owns_defn,definition,
-    ( owns = ( ^ [H: human,D: dog] : ( H = ( owner_of @ D ) ) ) ) ).
-
-thf(hate_the_multi_biter_dog,axiom,
-    ! [D: dog,H: human,N: $int] :
-      ( ~ ( owns @ H @ D ) & ( bit @ D @ H @ N ) & ( $greater @ N @ 1 ) 
-     => ( hates @ H @ ( owner_of @ D ) ) ) ).
-\end{verbatim}
-\caption{TH0 example}
-\label{TH0Example}
-\end{figure}
+% \begin{figure}[htbp]
+% \small
+% \setstretch{0.9}
+% \begin{verbatim}
+% tff(dog_decl,type,      dog: $tType ).
+% tff(human_decl,type,    human: $tType ).
+% tff(owner_of_decl,type, owner_of: dog > human ).
+% tff(bit_decl,type,      bit: (dog * human * $int) > $o ).
+% tff(hates_decl,type,    hates: (human * human) > $o ).
+% 
+% tff(hate_the_multi_biter_dog,axiom,
+%     ! [D: dog,H: human,N: $int] :
+%       ( ( H != owner_of(D) & bit(D,H,N) & $greater(N,1) )
+%      => hates(H,owner_of(D)) ) ).
+% \end{verbatim}
+% \caption{TF0 example}
+% \label{TF0Example}
+% \end{figure}
+% 
+% \begin{figure}[htbp]
+% \small
+% \setstretch{0.9}
+% \begin{verbatim}
+% thf(dog_decl,type,      dog: $tType ).
+% thf(human_decl,type,    human: $tType ).
+% thf(owner_of_decl,type, owner_of: dog > human ).
+% thf(owns_decl,type,     owns: human > dog > $o ).
+% thf(bit_decl,type,      bit: dog > human > $int > $o ).
+% thf(hates_decl,type,    hates: human > human > $o ).
+% 
+% thf(owns_defn,definition,
+%     ( owns = ( ^ [H: human,D: dog] : ( H = ( owner_of @ D ) ) ) ) ).
+% 
+% thf(hate_the_multi_biter_dog,axiom,
+%     ! [D: dog,H: human,N: $int] :
+%       ( ~ ( owns @ H @ D ) & ( bit @ D @ H @ N ) & ( $greater @ N @ 1 ) 
+%      => ( hates @ H @ ( owner_of @ D ) ) ) ).
+% \end{verbatim}
+% \caption{TH0 example}
+% \label{TH0Example}
+% \end{figure}
 
 The typed extended first-order form (TXF) \cite{SK18} augments TFF with FOOL logic \cite{KKV15} 
 constructs:
@@ -219,8 +199,12 @@ tff(knights_tell_truth,axiom,
 \label{TX0Example}
 \end{figure}
 
+The syntax of the TPTP languages is available in an extended BNF \cite{VS06}.\footnote{%
+\label{footnote:tptp}
+\href{https://www.tptp.org/TPTP/SyntaxBNF.html}{\tt https://www.tptp.org/TPTP/SyntaxBNF.html}}
+
 %--------------------------------------------------------------------------------------------------
-\subsection{The TPTP Non-Classical Languages}
+\section{The Non-Classical TPTP Languages}
 \label{NTFLanguages}
 
 The non-classical typed extended first-order form (NXF) and non-classical typed higher-order 
@@ -264,7 +248,7 @@ A new kind of TPTP annotated formula has been introduced for this, with the role
 and a ``logic specification'' as the formula.
 A logic specification consists of a defined logic (family) name identified with a list of 
 properties.
-Figure~\ref{NX0Example} shows a logic specification in NX0.
+Figure~\ref{NX0Example} includes a logic specification in NX0.
 
 %A simple example from modal logic is~\ldots
 %\[
@@ -323,15 +307,26 @@ tff(only_alex_gets_rich,conjecture,
 \end{figure}
 
 %--------------------------------------------------------------------------------------------------
-\subsection{Writing Non-classical Problems and Solutions}
-\label{NTFProblemsSolutions}
+% \subsection{Writing Non-classical Problems and Solutions}
+% \label{NTFProblemsSolutions}
 
 The NXF and NHF languages can be used to write problems that are not naturally expressed in
 classical logics.
-Figure~\ref{NXFExample} shows a NX0 example problem.
+Figure~\ref{NX0Example} shows a NX0 example problem.
 The TPTP format for derivations \cite{SS+06} can immediately be used for writing derivations in
 non-classical logic.
+
 The new TPTP format for interpretations can be used to write Kripke models.
+The worlds of the interpretation have a new defined type {\tt \$ki\_world}, and are 
+known to be distinct.
+A new defined predicate {\tt \$ki\_world\_is} of type {\tt \$ki\_world~>~\$o} is used to 
+recognize world.
+A new defined predicate {\tt \$ki\_accessible} of type {\tt (\$ki\_world~*~\$ki\_world)~>~\$o} is
+used to specify accessibility between worlds.
+Finally, a new defined constant {\tt \$ki\_local\_world} of type {\tt \$ki\_world} provides the 
+world of a problem's conjecture. 
+The interpretation within worlds uses the new TPTP format for Tarskian interpretations 
+\cite{SS+23-LPAR}, with guards used to specify the worlds in which the interpretation is used.
 Figure~\ref{NX0Kripke} shows the worlds and the first world's interpretation for a Kripke
 model in NX0, for the problem in Figure~\ref{NX0Example}.
 

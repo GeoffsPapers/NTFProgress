@@ -55,12 +55,6 @@ in both academia and industry.
 The web page \href{https://www.tptp.org}{\tt https://www.tptp.org} provides access to all 
 components.
 
-The TPTP languages \cite{Sut22-IGPL} are one of the keys to the success of the TPTP World.
-The languages are used for writing both TPTP problems and TSTP solutions.
-Originally the TPTP World supported only first-order clause normal form (CNF) \cite{SS98-JAR}.
-Over the years full first-order form (FOF) \cite{Sut09}, typed-first order form (TFF) 
-\cite{SS+12,BP13-TFF1}, and typed higher-order form (THF) \cite{SB10,KSR16} have been added.
-The TFF and THF languages include constructs for arithmetic.
 The development of standards for ATP systems for first- and higher-order logic has traditionally 
 focused mostly on classical logic, while many real-world applications often also require 
 non-classical reasoning. 
@@ -69,201 +63,69 @@ multi-agent systems), philosophy (e.g., formal ethics, metaphysics), natural lan
 (e.g., generalized quantifiers, modalities), and computer science (e.g., software and hardware 
 verification).
 This paper describes the latest extension of the TPTP World, providing languages and
-infrastructure for reasoning in non-classical logics \cite{Pri08,Gob01}, via the (new)
-non-classical typed extended first-order (NXF) and non-classical typed higher-order (NHF) 
-languages.
-Problems, solutions, and the logic to be used for reasoning, are expressed in the same language 
-framework.
-In this paper we exemplify the languages using modal logics \cite{BBW06}.
+infrastructure for reasoning in non-classical logics \cite{Pri08,Gob01}.
+In this paper we exemplify the languages and infrastructure using modal logics \cite{BBW06}.
 
 \paragraph{Paper structure.}~\\
 Section~\ref{TPTPLanguages} reviews the general structure of the TPTP languages and
 
 %--------------------------------------------------------------------------------------------------
-\section{The Classical TPTP Languages}
+\section{The Non-classical TPTP Languages}
 \label{TPTPLanguages}
 
-The top-level building blocks of the TPTP languages are {\em annotated formulae}.
-An annotated formula has the form:\\
-\hspace*{1cm}{\em language}{\tt (}{\em name}{\tt ,} {\em role}{\tt ,} {\em formula}{\tt ,} 
-{\em source}{\tt ,} {\em useful\_info}{\tt ).} \\ 
-The {\em language}s supported are clause normal form ({\tt cnf}), first-order form ({\tt fof}), 
-typed first-order form ({\tt tff}), and typed higher-order form ({\tt thf}).
-The {\em name} assigns a (unique) identifier to each formula, for referring to it.
-The {\em role}, e.g., {\tt axiom}, {\tt lemma}, {\tt conjecture}, defines the use of the formula 
-in an ATP system.
-In the {\em formula}, terms and atoms follow Prolog conventions.
-The TPTP language also supports interpreted symbols, including: 
-''the type of types'' {\tt \$tType};
-types for individuals {\tt \$i} ($\iota$) and booleans {\tt \$o} ($o$);
-types for numbers {\tt \$int} (integers), {\tt \$rat} (rationals), and {\tt \$real} (reals);
-numeric constants,
-arithmetic predicates and functions,
-and
-the truth constants {\tt \$true} and {\tt \$false}.
-An example annotated first-order formula supplied from a file named {\tt SET006+1.ax}, is~\ldots
+The TPTP languages for first-order clause normal form (CNF) \cite{SS98-JAR}, full first-order 
+form (FOF) \cite{Sut09}, typed-first order form (TFF) \cite{SS+12,BP13-TFF1}, and typed 
+higher-order form (THF) \cite{SB10,KSR16} are by now well known and regularly documented.
+\cite{SF+22} provides an overview that is relevant to this paper, but as a simple reminder, 
+here is an example monomorphic typed extended first-order (TX0) annotated formula, supplied 
+from a file named {\tt PUZ081\_8.p}, is~\ldots
 \[
 \begin{minipage}{\textwidth}
 \begin{verbatim}
-    fof(union,axiom,
-        ( ! [X,A,B] :
-            ( member(X,union(A,B))
-          <=> ( member(X,A) | member(X,B) ) ),
-        file('SET006+0.ax',union),
-        [description('Definition of union'), relevance(0.9)]).
+    tff(leaf_knaves_lie,axiom,
+        ! [I: inhabitant,S: $o] : 
+          ( ( is_knave(I) & says(I,S) ) => ~ S ),
+        file('PUZ081_8.p',knaves_lie),
+        [description('Knaves always lie'), relevance(0.9)]).
 \end{verbatim}
 \end{minipage}
 \]
-
-The typed first-order form (TFF) language extends FOF with types and type declarations.
-The monomorphic variant of TFF is called TF0.
-% Figure~\ref{TF0Example} shows example types and a formula in TF0.
-The typed higher-order form (THF) extends TFF with higher-order notions, including the
-curried form of type declarations, lambda terms with a lambda 
-binder {\tt \verb|^|} for $\lambda$, and application with {\tt @}.
-The monomorphic variant of THF is called TH0.
-% Figure~\ref{TH0Example} shows example types and formulae in TH0.
-The polymorphic variants of TFF and THF, called TF1 \cite{BP13-TFF1} and TH1 \cite{KSR16},
-add type constructors, type variables, and polymorphic symbols.
-The monomorphic variants are currently more widespread than the polymorphic variants.
-
-% \begin{figure}[htbp]
-% \small
-% \setstretch{0.9}
-% \begin{verbatim}
-% tff(dog_decl,type,      dog: $tType ).
-% tff(human_decl,type,    human: $tType ).
-% tff(owner_of_decl,type, owner_of: dog > human ).
-% tff(bit_decl,type,      bit: (dog * human * $int) > $o ).
-% tff(hates_decl,type,    hates: (human * human) > $o ).
-% 
-% tff(hate_the_multi_biter_dog,axiom,
-%     ! [D: dog,H: human,N: $int] :
-%       ( ( H != owner_of(D) & bit(D,H,N) & $greater(N,1) )
-%      => hates(H,owner_of(D)) ) ).
-% \end{verbatim}
-% \caption{TF0 example}
-% \label{TF0Example}
-% \end{figure}
-% 
-% \begin{figure}[htbp]
-% \small
-% \setstretch{0.9}
-% \begin{verbatim}
-% thf(dog_decl,type,      dog: $tType ).
-% thf(human_decl,type,    human: $tType ).
-% thf(owner_of_decl,type, owner_of: dog > human ).
-% thf(owns_decl,type,     owns: human > dog > $o ).
-% thf(bit_decl,type,      bit: dog > human > $int > $o ).
-% thf(hates_decl,type,    hates: human > human > $o ).
-% 
-% thf(owns_defn,definition,
-%     ( owns = ( ^ [H: human,D: dog] : ( H = ( owner_of @ D ) ) ) ) ).
-% 
-% thf(hate_the_multi_biter_dog,axiom,
-%     ! [D: dog,H: human,N: $int] :
-%       ( ~ ( owns @ H @ D ) & ( bit @ D @ H @ N ) & ( $greater @ N @ 1 ) 
-%      => ( hates @ H @ ( owner_of @ D ) ) ) ).
-% \end{verbatim}
-% \caption{TH0 example}
-% \label{TH0Example}
-% \end{figure}
-
-The typed extended first-order form (TXF) \cite{SK18} augments TFF with FOOL logic \cite{KKV15} 
-constructs:
-formulae of type {\tt \$o} as terms; 
-variables of type {\tt \$o} as formulae;
-tuple types and tuple terms;
-conditional (if-then-else) and let (let-defn-in) expressions.
-TXF provides the basis for the non-classical typed extended first-order form (NXF).
-Figure~\ref{TX0Example} shows example types and formulae in TX0.
-In parallel to the development of TXF, THF has been revised to have the same structures as TXF 
-for tuples, conditional expressions, and let expressions. 
-The revised THF provides the basis for the non-classical typed higher-order (NHF).
-
-\begin{figure}[htbp]
-\small
-\setstretch{0.9}
-\begin{verbatim}
-tff(inhabitant_decl,type,inhabitant: $tType ).
-tff(is_knight_decl,type,is_knight: inhabitant > $o ).
-tff(is_knave_decl,type,is_knave: inhabitant > $o ).
-tff(says_decl,type,says: ( inhabitant * $o ) > $o ).
-
-tff(knights_xor_knaves,axiom,
-    ! [I: inhabitant] : ( is_knight(I) <~> is_knave(I) ) ).
-tff(knights_tell_truth,axiom,
-    ! [I: inhabitant,S: $o] : ( ( is_knight(I) & says(I,S) ) => S ) ).
-\end{verbatim}
-\caption{TX0 example}
-\label{TX0Example}
-\end{figure}
-
+TXF (which breaks down into the monomorphic TX0 and polymorphic TX1) provides the basis for the 
+non-classical typed extended first-order form (NXF).
 The syntax of the TPTP languages is available in an extended BNF \cite{VS06}.\footnote{%
 \label{footnote:tptp}
 \href{https://www.tptp.org/TPTP/SyntaxBNF.html}{\tt https://www.tptp.org/TPTP/SyntaxBNF.html}}
 
-%--------------------------------------------------------------------------------------------------
-\section{The Non-Classical TPTP Languages}
-\label{NTFLanguages}
-
 The non-classical typed extended first-order form (NXF) and non-classical typed higher-order 
-form (NHF) languages are the new TPTP languages for non-classical logics.
-NXF and NHF add a new interpreted functor-like connective form
-{\tt \verb|{|}{\em connective\_name}{\tt \verb|}|}.
-A {\em connective\_name} may optionally be parameterized to reflect more complex 
-non-classical connectives, e.g., in multi-modals logics where the modal operators are indexed.
+form (NHF) languages are the TPTP languages for non-classical logics.
+NXF and NHF add an interpreted connective form
+{\tt \verb|{|\$}{\em name}{\tt \verb|}|}.
+Example {\em name}s are {\tt box}, {\tt dia}, {\tt possible}, {\tt necessary},
+{\tt obligatory}, {\tt permissible}, {\tt knows}, {\tt believes}, etc.
 In NXF the non-classical connectives are applied in a mixed applied/functional style, with the 
 connectives applied to a {\tt ()}ed list of arguments.
 In NHF the non-classical connectives are applied in higher-order style.
 Figure~\ref{NX0Example} shows example types and alethic modal logic formulae in NX0.
-% Augmenting the examples from above, using the box and diamond connectives from normal modal 
-% logic, and the necessary and possible connectives from alethic modal logic~\ldots 
-%\[
-%\begin{minipage}{\textwidth}
-%\small
-%\begin{verbatim}
-%    tff(jon_says_necessary_truth,axiom,
-%        ! [S: $o] : ( says(jon,S) => {$box} @ (S) ) ).
-%
-%    tff(observers_says_possible_dog_bit_owner,axiom,
-%        {$possible(#observer)} @ (? [D: dog] : bit(D,owner_of(D),1)) ).
-%
-%    thf(possible_jon_owns_biter,axiom,
-%        ! [D: dog] :
-%          ( ( bit @ D @ jon @ 1 )
-%         => ( {$dia} @ ( owns @ jon @ D ) ) ) ).
-%         
-%    thf(mother_of_jon_says_necessary_he_must_feed_odie,axiom,
-%        says @ jon @ ({$necessary(#mother)} @ (feeds @ jon @ odie)) ).
-%\end{verbatim}
-%\end{minipage}
-%\]
+A {\em name} may optionally be parameterized to reflect more complex non-classical connectives, 
+e.g., in epistemic logic where the agent of knowledge is an index,
+{\tt \verb|{|\$knows(\#manuel)\verb|}| @ (nothing)}\footnote{%
+As in \url{https://www.youtube.com/watch?v=ISD86-oM4Ow}}.
+There are also {\em short form} unary connectives for (unparameterised) {\tt \$box} and 
+{\tt \$dia}: {\tt [.]} and {\tt <.>}, e.g., {\tt \verb|{|\$box\verb|}| @ p} can be written 
+{\tt [.] p}.
+The NXF and NHF languages can be used to write problems that are not naturally expressed in
+classical logics.
+Figure~\ref{NX0Example} shows a NX0 example problem.
 
 In non-classical logics the same language can be used for formulae while different logics are 
 used for reasoning.
-It is therefore necessary to provide \mbox{(meta-)}information that specifies the
+It is therefore necessary to provide \mbox{(meta-)} information that specifies the
 logic to be used.
 A new kind of TPTP annotated formula has been introduced for this, with the role \texttt{logic},
 and a ``logic specification'' as the formula.
 A logic specification consists of a defined logic (family) name identified with a list of 
 properties.
 Figure~\ref{NX0Example} includes a logic specification in NX0.
-
-%A simple example from modal logic is~\ldots
-%\[
-%\begin{minipage}{\textwidth}
-%\small
-%\begin{verbatim}
-%   tff(simple_spec,logic, 
-%       $modal == [
-%         $domains == [ $constant, some_user_type == $varying ],
-%         $designations == $rigid,
-%         $terms == $local,
-%         $modalities == $modal_system_S5 ] ).
-%\end{verbatim}
-%\end{minipage}
-%\]
 
 \begin{figure}[htbp]
 \small
@@ -307,26 +169,23 @@ tff(only_alex_gets_rich,conjecture,
 \end{figure}
 
 %--------------------------------------------------------------------------------------------------
-% \subsection{Writing Non-classical Problems and Solutions}
-% \label{NTFProblemsSolutions}
+\section{Non-classical Proof and Models}
+\label{ProofsModels}
 
-The NXF and NHF languages can be used to write problems that are not naturally expressed in
-classical logics.
-Figure~\ref{NX0Example} shows a NX0 example problem.
 The TPTP format for derivations \cite{SS+06} can immediately be used for writing derivations in
 non-classical logic.
 
-The new TPTP format for interpretations can be used to write Kripke models.
-The worlds of the interpretation have a new defined type {\tt \$ki\_world}, and are 
-known to be distinct.
-A new defined predicate {\tt \$ki\_world\_is} of type {\tt \$ki\_world~>~\$o} is used to 
-recognize world.
-A new defined predicate {\tt \$ki\_accessible} of type {\tt (\$ki\_world~*~\$ki\_world)~>~\$o} is
-used to specify accessibility between worlds.
-Finally, a new defined constant {\tt \$ki\_local\_world} of type {\tt \$ki\_world} provides the 
-world of a problem's conjecture. 
-The interpretation within worlds uses the new TPTP format for Tarskian interpretations 
-\cite{SS+23-LPAR}, with guards used to specify the worlds in which the interpretation is used.
+The new TPTP format for interpretations \cite{SS+23-LPAR} can be used to write Kripke models.
+The worlds of a Kripke interpretation have the defined type {\tt \$ki\_world}, and are known to 
+be distinct.
+The defined predicate {\tt \$ki\_world\_is} of type {\tt \$ki\_world~>~\$o} is used to recognize 
+worlds.
+The defined predicate {\tt \$ki\_access\-ible} of type {\tt (\$ki\_world~*~\$ki\_world)~>~\$o} is
+used to specify the accessibility between worlds.
+Finally, the defined constant {\tt \$ki\_local\_world} of type {\tt \$ki\_world} is the world in
+which a problem's conjecture must be proved. 
+The Tarskian interpretations within worlds also use the new TPTP format for interpretations,
+with guards used to specify the worlds in which the Tarskian interpretation is used.
 Figure~\ref{NX0Kripke} shows the worlds and the first world's interpretation for a Kripke
 model in NX0, for the problem in Figure~\ref{NX0Example}.
 

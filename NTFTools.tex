@@ -306,24 +306,26 @@ At the front end, the {\tt tptp-utils} tool \cite{Ste22-TU} for pre- and post-pr
 problems (in all the TPTP languages) can be used on NXF and NHF problems.
 It does syntax checking, translations, generation of parse trees, and (basic) linting.
 For NXF and NHF in particular, it can sanity check logic specifications for modal logics.
-Its underlying parser, which is also used by Leo-III, is available as the stand-alone parsing library {\tt scala-tptp-parser} \cite{Ste21} implemented in Scala.
-It supports parsing all TPTP languages, including the polymorphically typed first-order and higher-order languages
-TF1 and TH1, the typed clause form TCF, the TPTP Process Instruction Language TPI, and the non-classical languages NXF/NHF.
-It comes with a complete definition of abstract syntax trees for the internal representation of TPTP input and a fully TPTP-compliant 
-pretty-printer. 
-As a stepping stone into ATP for NXF and NHF problems, the NTF Logic Embedding Tool {\tt NTFLET} 
+Its underlying parser, which is also used by Leo-III, is available as the stand-alone parsing 
+library {\tt scala-tptp-parser} \cite{Ste21} implemented in Scala.
+It supports parsing all TPTP languages, including the polymorphically typed first-order and 
+higher-order languages TF1 and TH1, the typed clause form TCF, the TPTP Process Instruction 
+Language TPI \cite{NS14-PAAR}, and the non-classical languages NXF/NHF.
+It comes with a complete definition of abstract syntax trees for the internal representation 
+of TPTP input and a fully TPTP-compliant pretty-printer. 
+As a stepping stone into ATP for NXF and NHF problems, the NTFLET Logic Embedding Tool 
 \cite{Ste22-LE} does a shallow embedding of NXF and NHF problems in classical logic 
 \cite{BP13,BR13,GSB17,GS18}.
-{\tt NTFLET} embeds NXF and NHF problems primarily into THF.
-Current work includes implementing optimized embeddings that automatically recognize language fragments
-so that first-order (TXF) output can be emitted. This is already done for modal logics, so that
-either TXF of THF is produced. By default {\tt NTFLET} produces TH0 resp.\ TX0, but it can optionally
-produce polymorphic TH1 resp.\ TX1 problems (which may be significantly shorter if the input problem
-contains many user types).
+NTFLET embeds NXF and NHF problems primarily into THF.
+Current work includes implementing optimized embeddings that automatically recognize language 
+fragments so that first-order (TXF) output can be emitted. 
+This is already done for modal logics, so that either TXF of THF is produced. 
+By default NTFLET produces TH0 or TX0, but it can optionally produce polymorphic TH1 or TX1 
+(which can be significantly shorter if the input problem contains many user types).
 This allows any TPTP-compliant TXF/THF ATP system to be added as a backend to form an 
 ATP system for NXF/NHF.
 This capability is built into Leo-III \cite{SB21,DBLP:conf/paar/Steen22}.
-Currently {\tt NTFLET} supports the range of modal logics presented above, a range of first-order
+Currently NTFLET supports the range of modal logics presented above, a range of first-order
 quantified hybrid logics, public announcement logic, and two different dyadic deontic logics.
 
 %--------------------------------------------------------------------------------------------------

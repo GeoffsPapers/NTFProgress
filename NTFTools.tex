@@ -34,10 +34,14 @@ University of Miami, USA \\
 \maketitle
 %--------------------------------------------------------------------------------------------------
 \begin{abstract}
-The abstract should briefly summarize the contents of the paper in
-150--250 words.
+The TPTP World \cite{Sut17} is a well established infrastructure that supports research, 
+development, and deployment of Automated Theorem Proving (ATP) systems.
+The development of the TPTP World has until now focused mostly on classical logic, while many 
+real-world applications of ATP also require non-classical reasoning. 
+This paper describes the latest extension of the TPTP World, providing languages and
+infrastructure for reasoning in non-classical logics.
 
-\keywords{First keyword  \and Second keyword \and Another keyword.}
+\keywords{TPTP World \and Non-classical logic.}
 \end{abstract}
 %--------------------------------------------------------------------------------------------------
 \section{Introduction}
@@ -84,8 +88,8 @@ An overview that is relevant to this paper is provided in \cite{SF+22}, and the 
 syntax of the languages is given in an extended BNF\footnote{%
 \href{https://www.tptp.org/TPTP/SyntaxBNF.html}{\tt www.tptp.org/TPTP/SyntaxBNF.html}
 \label{BNF}} \cite{VS06}.
-As a simple reminder, here is an example monomorphic typed extended first-order (TX0) annotated 
-formula~\ldots
+As a simple reminder, here is an example of a monomorphic typed extended first-order (TX0) 
+annotated formula~\ldots
 \[
 \begin{minipage}{\textwidth}
 \begin{verbatim}
@@ -98,13 +102,10 @@ formula~\ldots
 \end{minipage}
 \]
 
-TXF (which breaks down into the monomorphic TX0 and polymorphic TX1) provides the basis for the 
-non-classical typed extended first-order form (NXF).
-
 The non-classical typed extended first-order form (NXF) and non-classical typed higher-order 
 form (NHF) languages are the TPTP languages for non-classical logics.
 They are respectively based on the typed extended first-order (TXF) and typed higher-order (THF)
-languages, and correspondingly have monomorphic (NX0, NH0) and polymorphic (NX1, NH1) variants.
+languages, and correspondingly have mono\-morphic (NX0, NH0) and polymorphic (NX1, NH1) variants.
 NXF and NHF add an interpreted connective form {\tt \verb|{|\$}{\em name}{\tt \verb|}|}.
 Example {\em name}s are {\tt box}, {\tt dia}, {\tt possible}, {\tt necessary},
 {\tt obligatory}, {\tt permissible}, {\tt knows}, {\tt believes}, etc.
@@ -112,8 +113,9 @@ In NXF the non-classical connectives are applied in a mixed applied/functional s
 connectives applied to a {\tt ()}ed list of arguments.
 In NHF the non-classical connectives are applied in higher-order style.
 Figure~\ref{NX0Example} shows example types and alethic modal logic formulae in NX0.
-A {\em name} may optionally be parameterized to reflect more complex non-classical connectives, 
-e.g., in epistemic logic where the agent of knowledge is an index,
+
+A non-classical connectives {\em name} may be parameterized to reflect more complex 
+non-classical connectives, e.g., in epistemic logic where the agent of knowledge is an index,
 {\tt \verb|{|\$knows(\#manuel)\verb|}| @ (nothing)}\footnote{%
 As in 
 \href{https://www.youtube.com/watch?v=ISD86-oM4Ow}{\tt www.youtube.com/watch?v=ISD86-oM4Ow}}.
@@ -129,22 +131,27 @@ In non-classical logics the same language can be used for formulae while differe
 used for reasoning.
 It is therefore necessary to provide \mbox{(meta-)} information that specifies the
 logic to be used.
-A new kind of TPTP annotated formula has been introduced for this, with the role \texttt{logic},
-and a ``logic specification'' as the formula.
+A TPTP annotated formula with the role \texttt{logic} is used for this, with a ``logic 
+specification'' as the formula.
 A logic specification consists of a defined logic (family) name identified with a list of 
 properties.
 Figure~\ref{NX0Example} includes a logic specification in NX0 (note, the property names have
 been improved since their presentation in \cite{SF+22}).
-The {\tt \$domains} property specifies restrictions on the quantification domain across the 
-accessibility relation \cite{FM98}.
-The {\tt \$designation} property specifies whether symbols are interpreted rigidly, i.e., 
-interpreted as the same domain element in every world, or flexibly, i.e., possibly interpreted 
-as different domain elements in different worlds. 
+The {\tt \$domains} property specifies whether each quantification domain is constant, varying,
+cumulative, or decreasing, across the accessibility relation.
+The {\tt \$designation} property specifies whether symbols are interpreted rigidly
+% , i.e., interpreted as the same domain element in every world, 
+or flexibly
+% , i.e., possibly interpreted as different domain elements in different worlds. 
+across worlds.
 The {\tt \$terms} property specifies whether interpretation is local to the current world or
 global to all worlds.
 The {\tt \$modalities} property specifies properties of the connectives, either as a well-known 
-logic system, e.g., the modal system {\bf S5}, or as axiom schemes, e.g., the modal axiom {\bf 5}
-\cite{Gar18}.
+logic system
+% , e.g., the modal system {\bf S5}, 
+or as axiom schemes,
+% , e.g., the modal axiom {\bf 5}
+as in \cite{Gar18}.
 Further details of the logic specifications are in \cite{SF+22}.
 
 \begin{figure}[htbp]
@@ -200,19 +207,19 @@ conference and journal papers \cite{Rei92,FH+98,Sto00,PN+21},
 and 
 use cases \cite{BW14-ECAI,MR22}.
 
-The headers of non-classical logic problems have been updated to include relevant information.
-The {\tt Syntax} field includes the number of classical connectives in the long form, the 
-number that are indexed, and the number of connectives in the short-form, e.g,
+The headers of non-classical logic problems include relevant information.
+The {\tt Syntax} field includes the number of non-classical connectives and the 
+number that are indexed, e.g,
 the {\tt Number of connectives} data for the problem in Figure~\ref{NX0Example} is\ldots
 \begin{verbatim}
     8 (   2   ~;   0   |;   1   &)
       (   0 <=>;   1  =>;   0  <=;   0 <~>)
-      (   4 {}@;   0 {#};   0 {.})
+      (   4 {.};   0 {#})
 \end{verbatim}
-\ldots~i.e., four non-classical connectives in the full form, none are indexed, and no
-non-classical connectives in the short form.
+\ldots~i.e., four non-classical connectives in the full form of which none are indexed.
 The {\tt SPC} field has values for non-classical logic problems, e.g., the SPC for the problem 
-in Figure~\ref{NX0Example} is {\tt NX0\_THM\_NEQ\_NAR}.
+in Figure~\ref{NX0Example} is {\tt NX0\_THM\_NEQ\_NAR}, i.e., it's in the NX0 language, is
+a theorem, and there is no use of equality or arithmetic.
 The syntax and SPC information is part of the {\tt ProblemAndSolutionStatistics} file in the 
 {\tt Documents} directory of the TPTP distribution.
 

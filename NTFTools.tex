@@ -12,6 +12,14 @@
 \renewcommand{\textfloatsep}{2.0ex}
 \renewcommand{\dbltextfloatsep}{2.0ex}
 \setlength{\tabcolsep}{3pt}
+\newenvironment{packed_itemize}{
+\vspace*{-0.5em}
+\begin{itemize}
+\setlength{\partopsep}{0pt}
+\setlength{\itemsep}{1pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+}{\end{itemize}}
 
 \begin{document}
 
@@ -74,8 +82,14 @@ This paper describes the latest extension of the TPTP World, providing languages
 infrastructure for reasoning in non-classical logics \cite{Pri08,Gob01}.
 In this paper the languages and infrastructure are exemplified using modal logics \cite{BBW06}.
 
-\paragraph{Paper structure.}~\\
-Section~\ref{TPTPLanguages} reviews the general structure of the TPTP languages and
+\paragraph{Paper structure:}
+Section~\ref{TPTPLanguages} provides the key features of the TPTP languages for writing
+non-classical problems and solutions. 
+Section~\ref{TPTPTSTP} describes the ongoing work collecting non-classical problems for the TPTP
+problem library, and the TPTP format for solutions to such problems.
+Section~\ref{SystemsTools} gives an overview of ATP systems and tools for non-classical logics.
+Section~\ref{Conclusion} concludes, including plans for further development of the non-classical
+TPTP World.
 
 %--------------------------------------------------------------------------------------------------
 \section{The Non-classical TPTP Languages}
@@ -299,31 +313,33 @@ tff(leo_workers,interpretation,
 \section{ATP Systems and Tools}
 \label{SystemsTools}
 
-ATP for non-classical logic is a well established, and successful at least at the propositional
-level, endeavour.
+ATP for non-classical logics is a well established endeavour (particularly for propositional
+non-classical logics), but there are significantly fewer ATP systems available than for classical 
+logics.
 The ATP systems that we know about are
 K\raisebox{-3pt}{S}P \cite{NHD20,PN+21}, nanoCoP-M \cite{Ott21}, MleanCoP \cite{Ott14}, 
 MetTeL2 \cite{TSK12}, Leo-III \cite{SB21}, LoTREC \cite{FF+01}, and MSPASS \cite{HS00-TABLEAUX}.
-Front-end have been added to K\raisebox{-3pt}{S}P, nanoCoP-M, and MleanCoP to translate NXF
-and NHF problems to the systems' syntax, and can thus be used on the problems.
 Leo-III can used on NXF and NHF problems natively, via the embedding approach described below.
-These four systems are available in SystemOnTPTP.\footnote{%
-\href{https://www.tptp.org/cgi-bin/SystemOnTPTP}{\tt www.tptp.org/cgi-bin/SystemOnTPTP}}.
 As noted there, any TPTP-compliant TXF/THF ATP system can replace Leo-III as the backend after
 the embedding, thus offering a suite of system variants.
-Sadly, at the time of writing, there are no ATP systems that can output TPTP format proofs or 
+For the TPTP World, front-ends have been added to K\raisebox{-3pt}{S}P, nanoCoP-M, and MleanCoP,
+to translate NXF problems to the systems' input syntax so that they can be used on TPTP
+format problems.
+All these systems are available in SystemOnTPTP\footnote{%
+\href{https://www.tptp.org/cgi-bin/SystemOnTPTP}{\tt www.tptp.org/cgi-bin/SystemOnTPTP}}.
+Sadly, at the time of writing, there are no ATP systems that output TPTP format proofs or 
 Kripke models for non-classical logic problems (which were hopefully given in TPTP format).
 
 The TPTP World utilities TPTP4X and TPTP2T \cite{Sut07-CSR,Sut10}, and the BNF-based suite
-of parsers \cite{VS06}, can work with non-classical problems and problem data.
+of parsers \cite{VS06}, work with TPTP format non-classical problems and problem data.
 TPTP4X parses problems, can apply various transformations, and pretty-prints the formulae.
-TPTP2T selects problems and solutions with specified syntactic and sematic characteristics,
+TPTP2T selects problems and solutions with specified syntactic and semantic characteristics,
 e.g., it could be used to list non-classical problems in NXF that are theorems, contain equality,
 and are easy to prove.
 The BNF-based parsers offer stricter parsing the TPTP4X, and can present the parse trees in
 various forms.
 All these tools are freely available from GitHub\footnote{%
-\href{https://github.com/TPTPWorld}{\tt github.com/TPTPWorld}}, and online in SystemOnTPTP.
+\href{https://github.com/TPTPWorld}{\tt github.com/TPTPWorld}}, and in SystemOnTPTP.
 
 The TPTP World has several tools for processing proofs and models in non-classical logic.
 Although are no ATP systems that output TPTP format proofs for non-classical problems, the
@@ -333,27 +349,23 @@ The AGMMV model verifier for Kripke models can verify WHAT - NXF models?
 The IIV Interactive Interpretation Viewer \cite{MS23-Poster} can be used to interact with the
 Tarskian interpretations within the worlds of a Kripke model. 
 A wrapper to view the worlds and accessibility relationship of a Kripke model is being developed,
-which will be linked to the existing IIV to view a chosen world's Tarskian interpretation.
+which will be linked to IIV to view a chosen world's Tarskian interpretation.
 GDV, IDV, AGMMV, and IIV are all available in SystemOnTPTP.
 
 In addition to the TPTP World's own tools, a suite of tools that can read and manipulate 
-problems written in the NXF and NHF languages is available in the Leo-III framework \cite{SB21},
-and are also available in SystemOnTPTP.
+problems written in NXF and NHF is available in the Leo-III framework \cite{SB21}.
 At the front end, the {\tt tptp-utils} tool \cite{Ste22-TU} for pre- and post-processing TPTP 
 problems (in all the TPTP languages) can be used on NXF and NHF problems.
 It does syntax checking, translations, generation of parse trees, and (basic) linting.
 For NXF and NHF in particular, it can sanity check logic specifications for modal logics.
-Its underlying parser, which is also used by Leo-III, is available as the stand-alone parsing 
-library {\tt scala-tptp-parser} \cite{Ste21} implemented in Scala.
-It supports parsing all TPTP languages, including the polymorphically typed first-order and 
-higher-order languages TF1 and TH1, the typed clause form TCF, the TPTP Process Instruction 
-Language \cite{NS14-PAAR}, and the non-classical languages NXF/NHF.
+Its underlying parser written in Scala, which is also used by Leo-III, is available as the 
+stand-alone parsing library {\tt scala-tptp-parser} \cite{Ste21}.
+It supports parsing all TPTP languages, including NXF and NHF.
 It comes with a complete definition of abstract syntax trees for the internal representation 
-of TPTP input and a fully TPTP-compliant pretty-printer. 
+of TPTP input, and a fully TPTP-compliant pretty-printer. 
 As a stepping stone into ATP for NXF and NHF problems, the NTFLET Logic Embedding Tool 
-\cite{Ste22-LE} does a shallow embedding of NXF and NHF problems in classical logic 
-\cite{BP13,BR13,GSB17,GS18}.
-NTFLET embeds NXF and NHF problems primarily into THF.
+\cite{Ste22-LE} does a shallow embedding of NXF and NHF problems into classical logic 
+\cite{BP13,BR13,GSB17,GS18}, primarily into THF.
 Current work includes implementing optimized embeddings that automatically recognize language 
 fragments so that first-order (TXF) output can be emitted. 
 This is already done for modal logics, so that either TXF of THF is produced. 
@@ -364,10 +376,32 @@ ATP system for NXF/NHF.
 This capability is built into Leo-III \cite{SB21,Ste22}.
 Currently NTFLET supports a range of modal logics, a range of first-order quantified hybrid 
 logics, public announcement logic, and two different dyadic deontic logics.
+The Leo-III tools are also available in SystemOnTPTP.
 
 %--------------------------------------------------------------------------------------------------
 \section{Conclusion}
 \label{Conclusion}
+
+This paper describes the latest extension of the TPTP World, providing languages and
+infrastructure for reasoning in non-classical logics.
+That includes the NXF and NHF languages with non-classical connectives, and a new type of
+of formula for specifying the logic to be used for reasoning.
+The NXF and NHF languages are used for writing problems in non-classical logics, and the
+TPTP format for writing Kripke interpretations is introduced.
+ATP systems that can reason in non-classical logic, particularly those that can read 
+problems written in TXF and THF, are listed, and tools for manipulating formulae written in 
+NXF and NHF are described.
+Altogether, this paper has described the first steps towards the release of TPTP v9.0.0
+with non-classical problems.
+
+Ongoing and future work includes~\ldots
+\begin{packed_itemize}
+\item Collecting lots more problems in non-classical logics.
+\item Working with ATP system developers to upgrade their systems to natively read problems 
+      written in NXF and NHF, and to produce proofs and models in NXF or NHF.
+\item Producing an interactive viewer for Kripke interpretations written in TPTP-format.
+\item WHAT ELSE ALEX?
+\end{packed_itemize}
 
 %--------------------------------------------------------------------------------------------------
 \bibliographystyle{splncs04}

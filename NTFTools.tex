@@ -48,6 +48,7 @@ The development of the TPTP World has until now focused mostly on classical logi
 real-world applications of ATP also require non-classical reasoning. 
 This paper describes the latest extension of the TPTP World, providing languages and
 infrastructure for reasoning in non-classical logics.
+These are the keys steps towards releasing TPTP v9.0.0, with normal modal logic problems.
 
 \keywords{TPTP World \and Non-classical logic.}
 \end{abstract}
@@ -80,6 +81,7 @@ multi-agent systems), philosophy (e.g., formal ethics, metaphysics), natural lan
 verification).
 This paper describes the latest extension of the TPTP World, providing languages and
 infrastructure for reasoning in non-classical logics \cite{Pri08,Gob01}.
+These are the keys steps towards releasing TPTP v9.0.0, with modal logic problems.
 In this paper the languages and infrastructure are exemplified using modal logics \cite{BBW06}.
 
 \paragraph{Paper structure:}
@@ -235,7 +237,8 @@ The {\tt SPC} field has values for non-classical logic problems, e.g., the SPC f
 in Figure~\ref{NX0Example} is {\tt NX0\_THM\_NEQ\_NAR}, i.e., it's in the NX0 language, is
 a theorem, and there is no use of equality or arithmetic.
 The syntax and SPC information is part of the {\tt ProblemAndSolutionStatistics} file in the 
-{\tt Documents} directory of the TPTP distribution.
+{\tt Documents} directory of the TPTP distribution, and the {\tt Synopsis} files include
+the numbers of problems in non-classical logic.
 
 The TSTP solution library \cite{Sut07-CSR} contains solutions to TPTP problems, from a wide range
 of ATP systems.
@@ -365,18 +368,15 @@ It supports parsing all TPTP languages, including NXF and NHF.
 It comes with a complete definition of abstract syntax trees for the internal representation 
 of TPTP input, and a fully TPTP-compliant pretty-printer. 
 As a stepping stone into ATP for NXF and NHF problems, the NTFLET Logic Embedding Tool 
-\cite{Ste22-LE} does a shallow embedding of NXF and NHF problems into classical logic 
-\cite{BP13,BR13,GSB17,GS18}, primarily into THF.
-Current work includes implementing optimized embeddings that automatically recognize language 
-fragments so that first-order (TXF) output can be emitted. 
-This is already done for modal logics, so that either TXF of THF is produced. 
-By default NTFLET produces TH0 or TX0, but it can optionally produce polymorphic TH1 or TX1 
+\cite{Ste22-LE} does a shallow embedding of NXF problems into TXF or THF, and NHF problems
+into THF \cite{BP13,BR13,GSB17,GS18}.
+By default NTFLET produces TX0 or TH0, but it can optionally produce polymorphic TH1 or TX1
 (which can be significantly shorter if the input problem contains many user types).
-This allows any TPTP-compliant TXF/THF ATP system to be added as a backend to form an 
-ATP system for NXF/NHF.
-This capability is built into Leo-III \cite{SB21,Ste22}.
 Currently NTFLET supports a range of modal logics, a range of first-order quantified hybrid 
 logics, public announcement logic, and two different dyadic deontic logics.
+Any TPTP-compliant TXF/THF ATP system to be added as a backend to NTFLET to form an 
+ATP system for NXF/NHF.
+This is done internally in Leo-III \cite{SB21,Ste22}.
 The Leo-III tools are also available in SystemOnTPTP.
 
 %--------------------------------------------------------------------------------------------------
@@ -392,16 +392,18 @@ TPTP format for writing Kripke interpretations is introduced.
 ATP systems that can reason in non-classical logic, particularly those that can read 
 problems written in TXF and THF, are listed, and tools for manipulating formulae written in 
 NXF and NHF are described.
-Altogether, this paper has described the first steps towards the release of TPTP v9.0.0
-with non-classical problems.
+Altogether, this paper has described the keys steps towards releasing TPTP v9.0.0,
+with modal logic problems.
 
 Ongoing and future work includes~\ldots
 \begin{packed_itemize}
 \item Collecting lots more problems in non-classical logics.
 \item Working with ATP system developers to upgrade their systems to natively read problems 
       written in NXF and NHF, and to produce proofs and models in NXF or NHF.
+\item Optimizing the NTFLET embeddings to automatically recognize language fragments for which
+      TXF embedding is possible.
 \item Producing an interactive viewer for Kripke interpretations written in TPTP-format.
-\item Standardizing the representation of further specific non-classical logics in NXF/NHF (including
+\item Standardizing the embedding of further specific non-classical logics in NXF/NHF (including
       choosing connective names, and allowed parameters of the logic specification).
 \end{packed_itemize}
 

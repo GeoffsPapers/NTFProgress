@@ -342,10 +342,11 @@ All these tools are freely available from GitHub\footnote{%
 \href{https://github.com/TPTPWorld}{\tt github.com/TPTPWorld}}, and in SystemOnTPTP.
 
 The TPTP World has several tools for processing proofs and models in non-classical logic.
-Although are no ATP systems that output TPTP format proofs for non-classical problems, the
+Although there are no ATP systems that output TPTP format proofs for non-classical problems yet, the
 GDV derivation verifier \cite{Sut06} is able verify such proofs.
 Similarly, the IDV Interactive Derivation Viewer \cite{TPS07} is able to display such proofs.
-The AGMMV model verifier for Kripke models can verify WHAT - NXF models?
+The AGMMV model verifier can verify Kripke models given in a NXF-based Kripke interpretation
+representation format.
 The IIV Interactive Interpretation Viewer \cite{MS23-Poster} can be used to interact with the
 Tarskian interpretations within the worlds of a Kripke model. 
 A wrapper to view the worlds and accessibility relationship of a Kripke model is being developed,
@@ -400,7 +401,8 @@ Ongoing and future work includes~\ldots
 \item Working with ATP system developers to upgrade their systems to natively read problems 
       written in NXF and NHF, and to produce proofs and models in NXF or NHF.
 \item Producing an interactive viewer for Kripke interpretations written in TPTP-format.
-\item WHAT ELSE ALEX?
+\item Standardizing the representation of further specific non-classical logics in NXF/NHF (including
+      choosing connective names, and allowed parameters of the logic specification).
 \end{packed_itemize}
 
 %--------------------------------------------------------------------------------------------------

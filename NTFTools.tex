@@ -42,7 +42,7 @@ University of Miami, USA \\
 \maketitle
 %--------------------------------------------------------------------------------------------------
 \begin{abstract}
-The TPTP World \cite{Sut17} is a well established infrastructure that supports research, 
+The TPTP World is a well established infrastructure that supports research, 
 development, and deployment of Automated Theorem Proving (ATP) systems.
 The development of the TPTP World has until now focused mostly on classical logic, while many 
 real-world applications of ATP also require non-classical reasoning. 
@@ -82,7 +82,7 @@ verification).
 This paper describes the latest extension of the TPTP World, providing languages and
 infrastructure for reasoning in non-classical logics \cite{Pri08,Gob01}.
 These are the keys steps towards releasing TPTP v9.0.0, with modal logic problems.
-In this paper the languages and infrastructure are exemplified using modal logics \cite{BBW06}.
+In this paper the languages and infrastructure are exemplified in modal logic \cite{BBW06}.
 
 \paragraph{Paper structure:}
 Section~\ref{TPTPLanguages} provides the key features of the TPTP languages for writing
@@ -245,13 +245,13 @@ of ATP systems.
 The TPTP format for derivations \cite{SS+06} can immediately be used for writing derivations in
 non-classical logic.
 The new TPTP format for interpretations \cite{SS+23-LPAR} can be used to write Kripke models.
-The worlds of a Kripke interpretation have the defined type {\tt \$ki\_world}, and are known to 
+The worlds of a Kripke interpretation have the defined type {\tt \$world}, and are known to 
 be distinct.
-The defined predicate {\tt \$ki\_world\_is} of type {\tt \$ki\_world~>~\$o} is used to recognize 
+The defined predicate {\tt \$in\_world} of type {\tt \$world~>~\$o} is used to recognize 
 worlds.
-The defined predicate {\tt \$ki\_access\-ible} of type {\tt (\$ki\_world~*~\$ki\_world)~>~\$o} is
+The defined predicate {\tt \$access\-ible\_world} of type {\tt (\$world~*~\$world)~>~\$o} is
 used to specify the accessibility between worlds.
-Finally, the defined constant {\tt \$ki\_local\_world} of type {\tt \$ki\_world} is the world in
+Finally, the defined constant {\tt \$local\_world} of type {\tt \$world} is the world in
 which a problem's conjecture must be proved. 
 The Tarskian interpretations within worlds also use the new TPTP format for interpretations,
 with guards used to specify the worlds in which the Tarskian interpretation is used.
@@ -270,8 +270,8 @@ model in NX0, for the problem in Figure~\ref{NX0Example}.
 % tff(gets_rich_decl,type, gets_rich: person > $o).
 % 
 \begin{verbatim}
-tff(w1_decl,type,w1:     $ki_world).
-tff(w2_decl,type,w2:     $ki_world).
+tff(w1_decl,type,w1:     $world).
+tff(w2_decl,type,w2:     $world).
 tff(d_person_type,type,  d_person: $tType).
 tff(d2person_decl,type,  d2person: d_person > person ).
 tff(d_alex_decl,type,    d_alex: d_person).
@@ -281,13 +281,13 @@ tff(d2product_decl,type, d2product: d_product > product ).
 tff(d_leo_decl,type,     d_leo: d_product).
 
 tff(leo_workers,interpretation,
-    ( ( ! [W: $ki_world] : ( W = w1 | W = w2 )
+    ( ( ! [W: $world] : ( W = w1 | W = w2 )
       & $distinct(w1,w2)
-      & $ki_local_world = w1
-      & $ki_accessible(w1,w1)     %----Logic is M
-      & $ki_accessible(w2,w2)
-      & $ki_accessible(w1,w2) )
-    & ( $ki_world_is(w1,
+      & $local_world = w1
+      & $accessible_world(w1,w1)     %----Logic is M
+      & $accessible_world(w2,w2)
+      & $accessible_world(w1,w2) )
+    & ( $in_world(w1,
         ( ( ! [P: person] : ? [DP: d_person] : P = d2person(DP)
           & ! [DP: d_person] : ( DP = d_alex | DP = d_chris )
           & $distinct(d_alex,d_chris)

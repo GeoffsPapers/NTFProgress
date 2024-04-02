@@ -6,6 +6,7 @@
 \usepackage{color}
 \usepackage{setspace}
 \usepackage{verbatim}
+\usepackage{amsmath,amssymb}
 \renewcommand\UrlFont{\color{blue}\rmfamily}
 % \renewcommand{\arraystretch}{0.8}
 \renewcommand{\floatpagefraction}{0.9}
@@ -81,8 +82,8 @@ multi-agent systems), philosophy (e.g., formal ethics, metaphysics), natural lan
 verification).
 This paper describes the latest extension of the TPTP World, providing languages and
 infrastructure for reasoning in non-classical logics \cite{Pri08,Gob01}.
-These are the keys steps towards releasing TPTP v9.0.0, with modal logic problems.
-In this paper the languages and infrastructure are exemplified in modal logic \cite{BBW06}.
+These are the keys steps towards releasing TPTP v9.0.0, with normal modal logic problems.
+In this paper the languages and infrastructure are exemplified in normal modal logic \cite{BBW06}.
 
 \paragraph{Paper structure:}
 Section~\ref{TPTPLanguages} provides the key features of the TPTP languages for writing
@@ -123,8 +124,9 @@ form (NHF) languages are the TPTP languages for non-classical logics.
 They are respectively based on the typed extended first-order (TXF) and typed higher-order (THF)
 languages, and correspondingly have mono\-morphic (NX0, NH0) and polymorphic (NX1, NH1) variants.
 NXF and NHF add an interpreted connective form {\tt \verb|{|\$}{\em name}{\tt \verb|}|}.
-Example {\em name}s are {\tt box}, {\tt dia}, {\tt possible}, {\tt necessary},
-{\tt obligatory}, {\tt permissible}, {\tt knows}, {\tt believes}, etc.
+Example {\em name}s are {\tt box} (written $\Box$ in logic texts), {\tt dia} (written $\Diamond$ 
+in logic texts), {\tt possible}, {\tt necessary}, {\tt obligatory}, {\tt permissible}, 
+{\tt knows}, {\tt believes}, etc.
 In NXF the non-classical connectives are applied in a mixed applied/functional style, with the 
 connectives applied to a {\tt ()}ed list of arguments.
 In NHF the non-classical connectives are applied in higher-order style.
@@ -150,62 +152,59 @@ logic to be used.
 A TPTP annotated formula with the role \texttt{logic} is used for this, with a ``logic 
 specification'' as the formula.
 A logic specification consists of a defined logic (family) name identified with a list of 
-properties.
-Figure~\ref{NX0Example} includes a logic specification in NX0 (note, the property names have
-been improved since their presentation in \cite{SF+22}).
+properties (note, the property names have been improved since their presentation in \cite{SF+22}).
 The {\tt \$domains} property specifies whether each quantification domain is constant, varying,
 cumulative, or decreasing, across the accessibility relation.
-The {\tt \$designation} property specifies whether symbols are interpreted rigidly
-% , i.e., interpreted as the same domain element in every world, 
-or flexibly
-% , i.e., possibly interpreted as different domain elements in different worlds. 
-across worlds.
+The {\tt \$designation} property specifies whether symbols are interpreted rigidly, i.e., 
+interpreted as the same domain element in every world, or flexibly, i.e., possibly interpreted 
+as different domain elements in different worlds. 
 The {\tt \$terms} property specifies whether interpretation is local to the current world or
 global to all worlds.
 The {\tt \$modalities} property specifies properties of the connectives, either as a well-known 
-logic system
-% , e.g., the modal system {\bf S5}, 
-or as axiom schemes,
-% , e.g., the modal axiom {\bf 5}
+logic system, e.g., the modal system {\bf S5}, or as axiom schemes, e.g., the modal axiom {\bf 5} 
 as in \cite{Gar18}.
 Further details of the logic specifications are in \cite{SF+22}.
 
-\begin{figure}[htbp]
+\begin{figure}[h!]
 \small
 \setstretch{0.9}
 \begin{verbatim}
+%------------------------------------------------------------------------
 tff(semantics,logic,
-    $alethic_modal  ==
-      [ $domains    == $constant,
-        $rigidity   == $rigid,
-        $locality   == $local,
-        $modalities == $modal_system_M ] ).
+    $alethic_modal == [
+      $constants == $rigid,
+      $quantification == $constant,
+      $modalities == $modal_system_M ] ).
 
-tff(person_decl,type,    person: $tType).
-tff(product_decl,type,   product: $tType).
-tff(alex_decl,type,      alex: person).
-tff(chris_decl,type,     chris: person).
-tff(leo_decl,type,       leo: product).
-tff(work_hard_decl,type, work_hard: (person * product) > $o).
-tff(gets_rich_decl,type, gets_rich: person > $o).
+tff(fruit_type,type,   fruit: $tType).
+tff(apple_decl,type,   apple: fruit).
+tff(banana_decl,type,  banana: fruit).
+tff(healthy_decl,type, healthy: fruit > $o).
+tff(rotten_decl,type,  rotten: fruit > $o).
 
-tff(work_hard_to_get_rich,axiom,
-    ! [P: person] :
-      ( ? [R: product] : work_hard(P,R)
-     => ({$possible} @ (gets_rich(P))) ) ).
+%----Apples are different from bananas
+tff(apple_not_banana,axiom,
+    apple != banana ).
 
-tff(not_all_get_rich,axiom,
-    ~ ? [P: person] : ({$necessary} @ (gets_rich(P))) ).
+%----All fruit are necessarily healthy
+tff(necessary_healthy_fruit_everywhere,axiom,
+    ! [F: fruit] : ( {$necessary} @ (healthy(F)) ) ).
 
-tff(alex_works_on_leo,axiom,
-    work_hard(alex,leo) ).
+%----All fruit are possibly not rotten
+tff(fruit_possibly_not_rotten,axiom,
+    ! [F: fruit] : ( {$possible} @ (~ rotten(F)) ) ).
 
-tff(chris_works_on_leo,axiom,
-    work_hard(chris,leo) ).
+%----Bananas are rotten in the conjecture's "local" world
+tff(rotten_banana_here,axiom-local,
+    rotten(banana) ).
 
-tff(only_alex_gets_rich,conjecture,
-    ( {$possible} @ (gets_rich(alex)) 
-    & {$possible} @ (~ gets_rich(chris)) ) ).
+%----Try prove (you can't) that is necessary for apples to be healthy
+%----and bananas to be not rotten
+tff(not_true,conjecture,
+    ( {$necessary} @
+      (( healthy(apple)
+       & ~ rotten(banana) )) ) ).
+%------------------------------------------------------------------------
 \end{verbatim}
 \caption{NX0 example}
 \label{NX0Example}
@@ -225,17 +224,20 @@ use cases \cite{BW14-ECAI,MR22}.
 
 The headers of non-classical logic problems include relevant information.
 The {\tt Syntax} field includes the number of non-classical connectives and the 
-number that are indexed, e.g,
-the {\tt Number of connectives} data for the problem in Figure~\ref{NX0Example} is\ldots
-\begin{verbatim}
-    8 (   2   ~;   0   |;   1   &)
-      (   0 <=>;   1  =>;   0  <=;   0 <~>)
-      (   4 {.};   0 {#})
-\end{verbatim}
-\ldots~i.e., four non-classical connectives in the full form of which none are indexed.
-The {\tt SPC} field has values for non-classical logic problems, e.g., the SPC for the problem 
-in Figure~\ref{NX0Example} is {\tt NX0\_THM\_NEQ\_NAR}, i.e., it's in the NX0 language, is
-a theorem, and there is no use of equality or arithmetic.
+number that are indexed.
+% e.g, the {\tt Number of connectives} data for the problem in Figure~\ref{NX0Example} is\ldots
+% \begin{verbatim}
+%     8 (   2   ~;   0   |;   1   &)
+%       (   0 <=>;   1  =>;   0  <=;   0 <~>)
+%       (   4 {.};   0 {#})
+% \end{verbatim}
+% \ldots~i.e., four non-classical connectives in the full form of which none are indexed.
+The {\tt SPC} (Specialist Problem Class\footnote{%
+The problems in the TPTP library are divided into Specialist Problem Classes (SPCs) – classes of 
+problems that are homogeneous wrt recognizable logical, language, and syntactic characteristics})
+field has values for non-classical logic problems, e.g., the SPC for the problem in 
+Figure~\ref{NX0Example} is {\tt NX0\_THM\_NEQ\_NAR} -- it's in the NX0 language, is a theorem, 
+and there is no use of equality or arithmetic.
 The syntax and SPC information is part of the {\tt ProblemAndSolutionStatistics} file in the 
 {\tt Documents} directory of the TPTP distribution, and the {\tt Synopsis} files include
 the numbers of problems in non-classical logic.
@@ -245,68 +247,83 @@ of ATP systems.
 The TPTP format for derivations \cite{SS+06} can immediately be used for writing derivations in
 non-classical logic.
 The new TPTP format for interpretations \cite{SS+23-LPAR} can be used to write Kripke models.
-The worlds of a Kripke interpretation have the defined type {\tt \$world}, and are known to 
-be distinct.
-The defined predicate {\tt \$in\_world} of type {\tt \$world~>~\$o} is used to recognize 
-worlds.
-The defined predicate {\tt \$access\-ible\_world} of type {\tt (\$world~*~\$world)~>~\$o} is
-used to specify the accessibility between worlds.
-Finally, the defined constant {\tt \$local\_world} of type {\tt \$world} is the world in
-which a problem's conjecture must be proved. 
-The Tarskian interpretations within worlds also use the new TPTP format for interpretations,
-with guards used to specify the worlds in which the Tarskian interpretation is used.
-Figure~\ref{NX0Kripke} shows the worlds and the first world's interpretation for a Kripke
-model in NX0, for the problem in Figure~\ref{NX0Example}.
+Four new defined symbols are used in Kripke interpretation-formulae:
+\begin{packed_itemize}
+\item A new defined type {\tt \$world} is used for the worlds of the interpretation.
+      Different constants of type {\tt \$world} are known to be unequal (but as yet no ATP 
+      systems implement that, so it's necessary to encode that explicitly in the interpretation
+      using inequalities of the {\tt \$distinct} predicate).
+\item A new defined predicate {\tt \$accessible\_world} of type {\tt (\$world~*~\$world)~>~\$o}
+      is used to specify the accessibility relation between worlds.
+\item A new defined constant {\tt \$local\_world} of type {\tt \$world~>~\$o} is used to specify 
+      the world in which a local (the default) conjecture is to be proved. 
+\item A new defined predicate {\tt \$in\_world} of type {\tt (\$world~*~\$o)~>~\$o} is used to 
+      specify the interpretations in the worlds.
+      The boolean argument means the interpretation-formulae are necessarily written in TXF or THF.
+\end{packed_itemize}
+A single Kripke interpretation-formula is a conjunction of~\ldots
+\begin{packed_itemize}
+\item Specification of the worlds.
+\item Some expression of distinctness of the worlds (by definition different world are known to
+      be distinct, but no ATP systems know that yet).
+\item The accessibility relation.
+\item The local world if any.
+\item For each world, its Tarskian interpretation, also in the new TPTP format for interpretations.
+\end{packed_itemize}
+The interpretation-formulae are preceded by the necessary type declarations.
+Figure~\ref{NX0Kripke} shows the worlds and the first world's Tarskian interpretation for 
+a Kripke model in NX0, for the problem in Figure~\ref{NX0Example}.
 
 \begin{figure}[h!]
 \small
 \setstretch{0.9}
-% tff(person_decl,type,    person: $tType).
-% tff(product_decl,type,   product: $tType).
-% tff(alex_decl,type,      alex: person).
-% tff(chris_decl,type,     chris: person).
-% tff(leo_decl,type,       leo: product).
-% tff(work_hard_decl,type, work_hard: (person * product) > $o).
-% tff(gets_rich_decl,type, gets_rich: person > $o).
-% 
+% tff(fruit_type,type,fruit: $tType).
+% tff(apple_decl,type,apple: fruit).
+% tff(banana_decl,type,banana: fruit).
+% tff(healthy_decl,type,healthy: fruit > $o).
+% tff(rotten_decl,type,rotten: fruit > $o).
 \begin{verbatim}
-tff(w1_decl,type,w1:     $world).
-tff(w2_decl,type,w2:     $world).
-tff(d_person_type,type,  d_person: $tType).
-tff(d2person_decl,type,  d2person: d_person > person ).
-tff(d_alex_decl,type,    d_alex: d_person).
-tff(d_chris_decl,type,   d_chris: d_person).
-tff(d_product_type,type, d_product: $tType).
-tff(d2product_decl,type, d2product: d_product > product ).
-tff(d_leo_decl,type,     d_leo: d_product).
+%------------------------------------------------------------------------
+tff(d_fruit_type,type,d_fruit: $tType).
+tff(d2fruit_decl,type, d2fruit: d_fruit > fruit ).
+tff(d_apple_decl,type,d_apple: d_fruit).
+tff(d_banana_decl,type,d_banana: d_fruit).
 
-tff(leo_workers,interpretation,
+tff(w1_decl,type,w1: $world).
+tff(w2_decl,type,w2: $world).
+
+tff(fruity_worlds,interpretation,
+%----There are two worlds, w1 and w2
     ( ( ! [W: $world] : ( W = w1 | W = w2 )
-      & $distinct(w1,w2)
+%----The conjecture was disproved in world w1
       & $local_world = w1
+%----World accessibility is reflexive, and ws ir accessible from w1
       & $accessible_world(w1,w1)     %----Logic is M
       & $accessible_world(w2,w2)
       & $accessible_world(w1,w2) )
-    & ( $in_world(w1,
-        ( ( ! [P: person] : ? [DP: d_person] : P = d2person(DP)
-          & ! [DP: d_person] : ( DP = d_alex | DP = d_chris )
-          & $distinct(d_alex,d_chris)
-          & ? [DP: d_person] : ( DP = d_alex )
-          & ? [DP: d_person] : ( DP = d_chris )
-          & ! [DP1: d_person,DP2: d_person] : 
-              ( d2person(DP1) = d2person(DP2) => DP1 = DP2 )
-          & ! [P: product] : ? [DP: d_product] : P = d2product(DP)
-          & ! [DP: d_product] : DP = d_leo
-          & ? [DP: d_product] : DP = d_leo
-          & ! [DP1: d_product,DP2: d_product] :
-              ( d2product(DP1) = d2product(DP2) => DP1 = DP2 ) )
-        & ( alex = d2person(d_alex)
-          & chris = d2person(d_chris)
-          & leo = d2product(d_leo) )
-        & ( work_hard(d2person(d_alex),d2product(d_leo))
-          & work_hard(d2person(d_chris),d2product(d_leo))
-          & ~ gets_rich(d2person(d_alex))
-          & gets_rich(d2person(d_chris)) ) ) ) )
+%----Tarskian interpretation in world w1
+    & $in_world(w1,
+%----There are two fruit in the domain, apple and banana
+        ( ( ! [F: fruit] : ? [DF: d_fruit] : F = d2fruit(DF)
+          & ! [DF: d_fruit] : ( DF = d_apple | DF = d_banana )
+          & $distinct(d_apple,d_banana)
+%----The terms are local
+          & ? [DP: d_fruit] : ( DP = d_apple )
+          & ? [DP: d_fruit] : ( DP = d_banana )
+%----The type-promotion is reflexive
+          & ! [DF1: d_fruit,DF2: d_fruit] :
+              ( d2fruit(DF1) = d2fruit(DF2) => DF1 = DF2 ) )
+%----The constant apple is interpreted as the domain element
+        & ( apple = d2fruit(d_apple)
+%----The constant banana is interpreted as the domain element
+          & banana = d2fruit(d_banana) )
+%----Apples and bananas are healthy
+        & ( healthy(d2fruit(d_apple))
+          & healthy(d2fruit(d_banana))
+%----Apples are not rotten, bananas are rotten
+          & ~ rotten(d2fruit(d_apple))
+          & rotten(d2fruit(d_banana)) ) ) )
+%------------------------------------------------------------------------
 \end{verbatim}
 \caption{NX0 Kripke model example}
 \label{NX0Kripke}

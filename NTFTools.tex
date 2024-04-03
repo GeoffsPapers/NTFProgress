@@ -45,10 +45,10 @@ University of Miami, USA \\
 \begin{abstract}
 The TPTP World is a well established infrastructure that supports research, 
 development, and deployment of Automated Theorem Proving (ATP) systems.
-The development of the TPTP World has until now focused mostly on classical logic, while many 
+The development of the TPTP World has until now focused on classical logic, while many 
 real-world applications of ATP also require non-classical reasoning. 
-This paper describes the latest extension of the TPTP World, providing languages and
-infrastructure for reasoning in non-classical logics.
+This paper describes the latest extension of the TPTP World, providing languages, problems,
+solutions, and infrastructure for non-classical logics.
 These are the keys steps towards releasing TPTP v9.0.0, with normal modal logic problems.
 
 \keywords{TPTP World \and Non-classical logic.}
@@ -74,7 +74,7 @@ in both academia and industry.
 The web page \href{https://www.tptp.org}{\tt www.tptp.org} provides access to all 
 components.
 
-The development of the TPTP World has until now focused mostly on classical logic, while many 
+The development of the TPTP World has until now focused on classical logic, while many 
 real-world applications of ATP also require non-classical reasoning. 
 These applications include artificial intelligence (e.g., knowledge representation, planning, 
 multi-agent systems), philosophy (e.g., formal ethics, metaphysics), natural language semantics 
@@ -82,14 +82,21 @@ multi-agent systems), philosophy (e.g., formal ethics, metaphysics), natural lan
 verification).
 This paper describes the latest extension of the TPTP World, providing languages and
 infrastructure for reasoning in non-classical logics \cite{Pri08,Gob01}.
-These are the keys steps towards releasing TPTP v9.0.0, with normal modal logic problems.
-In this paper the languages and infrastructure are exemplified in normal modal logic \cite{BBW06}.
+The non-classical logics supported so far are
+normal modal \cite{FM98},
+alethic modal \cite{Sch06-CPL},
+deontic \cite{Hil71},
+epistemic \cite{vDH15},
+doxastic \cite{Hin62}, and
+instant-based temporal \cite{GR22}.
+In this paper the languages and infrastructure are exemplified in normal modal logic \cite{BBW06},
+as will be used in problems in TPTP v9.0.0.
 
 \paragraph{Paper structure:}
 Section~\ref{TPTPLanguages} provides the key features of the TPTP languages for writing
 non-classical problems and solutions. 
-Section~\ref{TPTPTSTP} describes the ongoing work collecting non-classical problems for the TPTP
-problem library, and the TPTP format for solutions to such problems.
+Section~\ref{TPTP} describes the collection of non-classical problems for the TPTP problem library, 
+and Section~\ref{TSTP} the collection of solutions to such problems in the TSTP solution library.
 Section~\ref{SystemsTools} gives an overview of ATP systems and tools for non-classical logics.
 Section~\ref{Conclusion} concludes, including plans for further development of the non-classical
 TPTP World.
@@ -103,8 +110,8 @@ form (FOF) \cite{Sut09}, typed-first order form (TFF) \cite{SS+12,BP13-TFF1}, an
 higher-order form (THF) \cite{SB10,KSR16} are by now well known and regularly documented.
 An overview that is relevant to this paper is provided in \cite{SF+22}, and the detailed
 syntax of the languages is given in an extended BNF\footnote{%
-\href{https://www.tptp.org/TPTP/SyntaxBNF.html}{\tt www.tptp.org/TPTP/SyntaxBNF.html}
-\label{BNF}} \cite{VS06}.
+\label{BNF}\href{https://www.tptp.org/TPTP/SyntaxBNF.html}{\tt www.tptp.org/TPTP/SyntaxBNF.html}} 
+\cite{VS06}.
 As a simple reminder, here is an example of a monomorphic typed extended first-order (TX0) 
 annotated formula~\ldots
 \[
@@ -123,27 +130,38 @@ The non-classical typed extended first-order form (NXF) and non-classical typed 
 form (NHF) languages are the TPTP languages for non-classical logics.
 They are respectively based on the typed extended first-order (TXF) and typed higher-order (THF)
 languages, and correspondingly have mono\-morphic (NX0, NH0) and polymorphic (NX1, NH1) variants.
-NXF and NHF add an interpreted connective form {\tt \verb|{|\$}{\em name}{\tt \verb|}|}.
-Example {\em name}s are {\tt box} (written $\Box$ in logic texts), {\tt dia} (written $\Diamond$ 
-in logic texts), {\tt possible}, {\tt necessary}, {\tt obligatory}, {\tt permissible}, 
-{\tt knows}, {\tt believes}, etc.
-In NXF the non-classical connectives are applied in a mixed applied/functional style, with the 
-connectives applied to a {\tt ()}ed list of arguments.
-In NHF the non-classical connectives are applied in higher-order style.
-Figure~\ref{NX0Example} shows example types and alethic modal logic formulae in NX0.
 
-A non-classical connectives {\em name} may be parameterized to reflect more complex 
-non-classical connectives, e.g., in epistemic logic where the agent of knowledge is an index,
-{\tt \verb|{|\$knows(\#manuel)\verb|}| @ (nothing)}\footnote{%
-As in 
-\href{https://www.youtube.com/watch?v=ISD86-oM4Ow}{\tt www.youtube.com/watch?v=ISD86-oM4Ow}}.
-There are also {\em short form} unary connectives for (unparameterised) {\tt \$box} and 
-{\tt \$dia}: {\tt [.]} and {\tt <.>}, e.g., {\tt \verb|{|\$box\verb|}| @ p} can be written 
-{\tt [.] p}.
-% The syntax for formulae in non-classical logics is captured in the extended BNF with
-% {\tt <nhf\_long\_conn\-ective>}, {\tt <nxf\_atom>}, {\tt <nxf\_long\_conn\-ective>},
-% {\tt <ntf\_short\_conn\-ective>}, and {\tt <tff\_logic\_defn>},
-Further details of the NXF and NHF languages are in \cite{SF+22}.
+The non-classical connectives of NXF and NHF have the form {\tt \{\$}{\em name}{\tt \}}.
+Examples are {\tt \{\$box\}} ($\Box$ in logic texts), {\tt \{\$dia\}} ($\Diamond$ in logic texts), 
+{\tt \{\$possible\}}, {\tt \{\$necessary\}}, {\tt \{\$obligatory\}}, {\tt \{\$permissible\}}, 
+{\tt \{\$knows\}}, {\tt \{\$believes\}}, etc.
+A connective may optionally be parameterized to reflect more complex non-classical connectives,
+e.g., in multi-modal logics where the modal operators are indexed, in epistemic logics
+where the knowledge operators can specify the agents under consideration,
+and in dynamic logics \cite{HKT00} where the connectives are parameterized with (complex) programs.
+The form is
+{\tt \verb|{|\$}{\em name}{\tt (}{\em param$_1$}{\tt ,}{\em \ldots}{\tt ,}{\em param$_n$}{\tt )}{\tt \verb|}|}.
+If the connective is indexed the index is given as the first parameter prefixed with a {\tt \#},
+e.g., {\tt \{\$knows(\#manuel)\} @ (nothing)}\footnote{%
+As in \href{https://www.youtube.com/watch?v=ISD86-oM4Ow}{\tt www.youtube.com/watch?v=ISD86-oM4Ow}}.
+All other parameters are key-value assignments.
+There are also short form unary connectives for unparameterised $\Box$ and $\Diamond$: {\tt [.]} 
+and {\tt <.>}, e.g., $\Box p$ can be written {\tt [.] p}.
+
+In NXF the non-classical connectives are applied in a mixed 
+``higher-order applied''/``first-order functional'' style, with the connectives applied to a
+{\tt ()}ed list of arguments.\footnote{%
+This slightly unusual form was chosen to reflect the first-order functional style, but by making
+the application explicit the formulae can be parsed in Prolog -- a long standing principle of the
+TPTP languages \cite{SZS04}.}
+In NHF the non-classical connectives are applied in usual higher-order style, with curried 
+function applications using the application operator {\tt @}.
+Full specification of the connectives and their use in formulae is in the 
+BNF
+% \footnotemark[\ref{BNF}] 
+starting at {\tt <nxf\_atom>} and {\tt <thf\_defined\_atomic>}.
+Figure~\ref{NX0Example} shows example types and alethic modal logic formulae in NX0 (the
+{\tt semantics} formula is explained next).
 
 In non-classical logics the same language can be used for formulae while different logics are 
 used for reasoning.
@@ -164,6 +182,7 @@ The {\tt \$modalities} property specifies properties of the connectives, either 
 logic system, e.g., the modal system {\bf S5}, or as axiom schemes, e.g., the modal axiom {\bf 5} 
 as in \cite{Gar18}.
 Further details of the logic specifications are in \cite{SF+22}.
+Figure~\ref{NX0Example} shows a logic specification in NX0.
 
 \begin{figure}[h!]
 \small
@@ -194,12 +213,12 @@ tff(necessary_healthy_fruit_everywhere,axiom,
 tff(fruit_possibly_not_rotten,axiom,
     ! [F: fruit] : ( {$possible} @ (~ rotten(F)) ) ).
 
-%----Bananas are rotten in the conjecture's "local" world
+%----Bananas are rotten in the conjecture's (local) world
 tff(rotten_banana_here,axiom-local,
     rotten(banana) ).
 
-%----Try prove (you can't) that is necessary for apples to be healthy
-%----and bananas to be not rotten
+%----Try prove that is necessary for apples to be healthy and bananas 
+%----to be not rotten. Impossible because bananas are rotten locally.
 tff(not_true,conjecture,
     ( {$necessary} @
       (( healthy(apple)
@@ -211,10 +230,13 @@ tff(not_true,conjecture,
 \end{figure}
 
 %--------------------------------------------------------------------------------------------------
-\section{TPTP Problems and TSTP Solutions}
-\label{TPTPTSTP}
+\section{TPTP Problems}
+\label{TPTP}
 
-A core piece of TPTP infrastructure is the TPTP problem library of test problems for ATP systems.
+The TPTP problem library of test problems for ATP systems has been extended in v9.0.0 to include
+problems in monomodal normal modal logic using the NX0 and NH0 languages.\footnote{%
+The numbers of problems are unknown at the time of writing, but by the time of release it will
+be in the 100s, not 1000s.}
 To start with, problems in monomodal normal modal logic are being collected, including problems 
 from (the citations are just some examples)
 books \cite{For94,FM98,Gir00,Sid10}, 
@@ -222,57 +244,68 @@ conference and journal papers \cite{Rei92,FH+98,Sto00,PN+21},
 and 
 use cases \cite{BW14-ECAI,MR22}.
 
-The headers of non-classical logic problems include relevant information.
-The {\tt Syntax} field includes the number of non-classical connectives and the 
-number that are indexed.
-% e.g, the {\tt Number of connectives} data for the problem in Figure~\ref{NX0Example} is\ldots
-% \begin{verbatim}
-%     8 (   2   ~;   0   |;   1   &)
-%       (   0 <=>;   1  =>;   0  <=;   0 <~>)
-%       (   4 {.};   0 {#})
-% \end{verbatim}
-% \ldots~i.e., four non-classical connectives in the full form of which none are indexed.
-The {\tt SPC} (Specialist Problem Class\footnote{%
-The problems in the TPTP library are divided into Specialist Problem Classes (SPCs) – classes of 
-problems that are homogeneous wrt recognizable logical, language, and syntactic characteristics})
-field has values for non-classical logic problems, e.g., the SPC for the problem in 
-Figure~\ref{NX0Example} is {\tt NX0\_THM\_NEQ\_NAR} -- it's in the NX0 language, is a theorem, 
-and there is no use of equality or arithmetic.
-The syntax and SPC information is part of the {\tt ProblemAndSolutionStatistics} file in the 
-{\tt Documents} directory of the TPTP distribution, and the {\tt Synopsis} files include
-the numbers of problems in non-classical logic.
+The headers of the non-classical logic problems include relevant augmented information:
+\begin{packed_itemize}
+\item The {\tt Syntax} field includes the number of non-classical connectives that are not indexed,
+      and the number that are indexed.
+      For example, the problem in Figure~\ref{NX0Example} has four non-indexed connectives and
+      no indexed connectives, written ``{\tt 4 \{.\};   0 \{\#\}}'' in the header field.
+\item The {\tt SPC} (Specialist Problem Class\footnote{%
+      The problems in the TPTP library are divided into Specialist Problem Classes (SPCs) – 
+      classes of problems that are homogeneous wrt recognizable logical, language, and syntactic 
+      characteristics}) field has values for non-classical logic problems. 
+      For example, the SPC of the problem in Figure~\ref{NX0Example} is {\tt NX0\_THM\_NEQ\_NAR} 
+      -- it's in the NX0 language, is a theorem, and there is no use of equality or arithmetic.
+\end{packed_itemize}
+
+The files in the {\tt Documents} directory have been correspondingly augmented:
+\begin{packed_itemize}
+\item The {\tt TFFSynopsis}, {\tt THFSynopsis}, and {\tt OverallSynopsis} files give the numbers 
+      of non-classical logic problems.
+\item The {\tt ProblemAndSolutionStatistics} file gives the numbers of non-classical
+      connectives in each problem.
+\end{packed_itemize}
+
+%--------------------------------------------------------------------------------------------------
+\section{TSTP Solutions}
+\label{TSTP}
 
 The TSTP solution library \cite{Sut07-CSR} contains solutions to TPTP problems, from a wide range
 of ATP systems.
 The TPTP format for derivations \cite{SS+06} can immediately be used for writing derivations in
 non-classical logic.
 The new TPTP format for interpretations \cite{SS+23-LPAR} can be used to write Kripke models.
+The TSTP contains solutions for the non-classical problems in the TPTP (see Section~\ref{TPTP}), 
+from the ATP systems for non-classical logic available in the TPTP World (see
+Section~\ref{ATPSystems}).
+However, at the time of writing none of the systems output their solutions in TPTP format in
+the non-classical language (Leo-III outputs its proofs in TPTP format, but the proofs are
+in the language of the embedded problems - TF0 or TH0 \cite{SS+23}.
+
+ZZZZZZZZZZZZ
 Four new defined symbols are used in Kripke interpretation-formulae:
 \begin{packed_itemize}
-\item A new defined type {\tt \$world} is used for the worlds of the interpretation.
+\item A defined type {\tt \$world} is used for the worlds of the interpretation.
       Different constants of type {\tt \$world} are known to be unequal (but as yet no ATP 
-      systems implement that, so it's necessary to encode that explicitly in the interpretation
-      using inequalities of the {\tt \$distinct} predicate).
-\item A new defined predicate {\tt \$accessible\_world} of type {\tt (\$world~*~\$world)~>~\$o}
+      systems implement that, so it's necessary to encode that explicitly using inequalities of 
+      the {\tt \$distinct} predicate).
+\item A defined predicate {\tt \$accessible\_world} of type {\tt (\$world~*~\$world)~>~\$o}
       is used to specify the accessibility relation between worlds.
-\item A new defined constant {\tt \$local\_world} of type {\tt \$world~>~\$o} is used to specify 
+\item A defined constant {\tt \$local\_world} of type {\tt \$world~>~\$o} is used to specify 
       the world in which a local (the default) conjecture is to be proved. 
-\item A new defined predicate {\tt \$in\_world} of type {\tt (\$world~*~\$o)~>~\$o} is used to 
+\item A defined predicate {\tt \$in\_world} of type {\tt (\$world~*~\$o)~>~\$o} is used to 
       specify the interpretations in the worlds.
       The boolean argument means the interpretation-formulae are necessarily written in TXF or THF.
 \end{packed_itemize}
-A single Kripke interpretation-formula is a conjunction of~\ldots
-\begin{packed_itemize}
-\item Specification of the worlds.
-\item Some expression of distinctness of the worlds (by definition different world are known to
-      be distinct, but no ATP systems know that yet).
-\item The accessibility relation.
-\item The local world if any.
-\item For each world, its Tarskian interpretation, also in the new TPTP format for interpretations.
-\end{packed_itemize}
+A Kripke interpretation-formula is a conjunction of specification of the worlds,
+distinctness of the worlds,
+the accessibility relation,
+the local world if any,
+for each world, its Tarskian interpretation (also in the new TPTP format for interpretations).
 The interpretation-formulae are preceded by the necessary type declarations.
 Figure~\ref{NX0Kripke} shows the worlds and the first world's Tarskian interpretation for 
 a Kripke model in NX0, for the problem in Figure~\ref{NX0Example}.
+The second world is the same except that bananas are not rotten.
 
 \begin{figure}[h!]
 \small
@@ -320,7 +353,7 @@ tff(fruity_worlds,interpretation,
 %----Apples and bananas are healthy
         & ( healthy(d2fruit(d_apple))
           & healthy(d2fruit(d_banana))
-%----Apples are not rotten, bananas are rotten
+%----Apples are not rotten, bananas are rotten in the local world w1
           & ~ rotten(d2fruit(d_apple))
           & rotten(d2fruit(d_banana)) ) ) )
 %------------------------------------------------------------------------
@@ -330,8 +363,58 @@ tff(fruity_worlds,interpretation,
 \end{figure}
 
 %--------------------------------------------------------------------------------------------------
-\section{ATP Systems and Tools}
+\section{Software Support}
 \label{SystemsTools}
+
+A range of software support has been developed, and continues to be developed, to support
+access to and manipulation of non-classical logic problems, ATP systems, solutions, and
+processing tools.
+
+%--------------------------------------------------------------------------------------------------
+\subsection{Parsers}
+\label{Parsers}
+
+The TPTP World utilities TPTP4X and TPTP2T \cite{Sut07-CSR,Sut10}, and the BNF-based suite
+of parsers \cite{VS06}, work with TPTP format non-classical problems and problem data.
+TPTP4X parses problems, can apply various transformations, and pretty-prints the formulae.
+TPTP2T selects problems and solutions with specified syntactic and semantic characteristics,
+e.g., it could be used to list non-classical problems in NXF that are theorems, contain equality,
+and are easy to prove.
+The BNF-based parsers offer stricter parsing than TPTP4X, and can present the parse trees in
+various forms.
+All these tools are freely available from GitHub\footnote{%
+\href{https://github.com/TPTPWorld}{\tt github.com/TPTPWorld}}, and in SystemOnTPTP.
+
+In addition to the TPTP World's own tools, a suite of tools that can read and manipulate 
+problems written in NXF and NHF is available in the Leo-III framework \cite{SB21}.
+At the front end, the {\tt tptp-utils} tool \cite{Ste22-TU} for pre- and post-processing TPTP 
+problems (in all the TPTP languages) can be used on NXF and NHF problems.
+It does syntax checking, translations, generation of parse trees, and (basic) linting.
+For NXF and NHF in particular, it can sanity check logic specifications for modal logics.
+Its underlying parser written in Scala, which is also used by Leo-III, is available as the 
+stand-alone parsing library {\tt scala-tptp-parser} \cite{Ste21}.
+It supports parsing all TPTP languages, including NXF and NHF.
+It comes with a complete definition of abstract syntax trees for the internal representation 
+of TPTP input, and a fully TPTP-compliant pretty-printer. 
+
+%--------------------------------------------------------------------------------------------------
+\subsection{Translators}
+\label{Parsers}
+
+As a stepping stone into ATP for NXF and NHF problems, the NTFLET Logic Embedding Tool 
+\cite{Ste22-LE} does a shallow embedding of NXF problems into TXF or THF, and NHF problems
+into THF \cite{BP13,BR13,GSB17,GS18}.
+By default NTFLET produces TX0 or TH0, but it can optionally produce polymorphic TH1 or TX1
+(which can be significantly shorter if the input problem contains many user types).
+Currently NTFLET supports a range of modal logics, a range of first-order quantified hybrid 
+logics, public announcement logic, and two different dyadic deontic logics.
+Any TPTP-compliant TXF/THF ATP system to be added as a backend to NTFLET to form an 
+ATP system for NXF/NHF.
+This is done internally in Leo-III \cite{SB21,Ste22}.
+
+%--------------------------------------------------------------------------------------------------
+\subsection{ATP Systems}
+\label{ATPSystems}
 
 ATP for non-classical logics is a well established endeavour (particularly for propositional
 non-classical logics), but there are significantly fewer ATP systems available than for classical 
@@ -350,16 +433,9 @@ All these systems are available in SystemOnTPTP\footnote{%
 Sadly, at the time of writing, there are no ATP systems that output TPTP format proofs or 
 Kripke models for non-classical logic problems (which were hopefully given in TPTP format).
 
-The TPTP World utilities TPTP4X and TPTP2T \cite{Sut07-CSR,Sut10}, and the BNF-based suite
-of parsers \cite{VS06}, work with TPTP format non-classical problems and problem data.
-TPTP4X parses problems, can apply various transformations, and pretty-prints the formulae.
-TPTP2T selects problems and solutions with specified syntactic and semantic characteristics,
-e.g., it could be used to list non-classical problems in NXF that are theorems, contain equality,
-and are easy to prove.
-The BNF-based parsers offer stricter parsing the TPTP4X, and can present the parse trees in
-various forms.
-All these tools are freely available from GitHub\footnote{%
-\href{https://github.com/TPTPWorld}{\tt github.com/TPTPWorld}}, and in SystemOnTPTP.
+%--------------------------------------------------------------------------------------------------
+\subsection{Verifiers}
+\label{Verifiers}
 
 The TPTP World has several tools for processing proofs and models in non-classical logic.
 Although there are no ATP systems that output TPTP format proofs for non-classical problems yet, the
@@ -367,33 +443,21 @@ GDV derivation verifier \cite{Sut06} is able verify such proofs.
 Similarly, the IDV Interactive Derivation Viewer \cite{TPS07} is able to display such proofs.
 The AGMMV model verifier can verify Kripke models given in a NXF-based Kripke interpretation
 representation format.
+
+%--------------------------------------------------------------------------------------------------
+\subsection{Online}
+\label{Online}
+
+TPTP2T \cite{}
+
+SystemB4TPTP, SystemOnTPTP, SystemOnTSTP
+
 The IIV Interactive Interpretation Viewer \cite{MS23-Poster} can be used to interact with the
 Tarskian interpretations within the worlds of a Kripke model. 
 A wrapper to view the worlds and accessibility relationship of a Kripke model is being developed,
 which will be linked to IIV to view a chosen world's Tarskian interpretation.
 GDV, IDV, AGMMV, and IIV are all available in SystemOnTPTP.
 
-In addition to the TPTP World's own tools, a suite of tools that can read and manipulate 
-problems written in NXF and NHF is available in the Leo-III framework \cite{SB21}.
-At the front end, the {\tt tptp-utils} tool \cite{Ste22-TU} for pre- and post-processing TPTP 
-problems (in all the TPTP languages) can be used on NXF and NHF problems.
-It does syntax checking, translations, generation of parse trees, and (basic) linting.
-For NXF and NHF in particular, it can sanity check logic specifications for modal logics.
-Its underlying parser written in Scala, which is also used by Leo-III, is available as the 
-stand-alone parsing library {\tt scala-tptp-parser} \cite{Ste21}.
-It supports parsing all TPTP languages, including NXF and NHF.
-It comes with a complete definition of abstract syntax trees for the internal representation 
-of TPTP input, and a fully TPTP-compliant pretty-printer. 
-As a stepping stone into ATP for NXF and NHF problems, the NTFLET Logic Embedding Tool 
-\cite{Ste22-LE} does a shallow embedding of NXF problems into TXF or THF, and NHF problems
-into THF \cite{BP13,BR13,GSB17,GS18}.
-By default NTFLET produces TX0 or TH0, but it can optionally produce polymorphic TH1 or TX1
-(which can be significantly shorter if the input problem contains many user types).
-Currently NTFLET supports a range of modal logics, a range of first-order quantified hybrid 
-logics, public announcement logic, and two different dyadic deontic logics.
-Any TPTP-compliant TXF/THF ATP system to be added as a backend to NTFLET to form an 
-ATP system for NXF/NHF.
-This is done internally in Leo-III \cite{SB21,Ste22}.
 The Leo-III tools are also available in SystemOnTPTP.
 
 %--------------------------------------------------------------------------------------------------
@@ -422,6 +486,7 @@ Ongoing and future work includes~\ldots
 \item Producing an interactive viewer for Kripke interpretations written in TPTP-format.
 \item Standardizing the embedding of further specific non-classical logics in NXF/NHF (including
       choosing connective names, and allowed parameters of the logic specification).
+\item A non-classical division of CASC.
 \end{packed_itemize}
 
 %--------------------------------------------------------------------------------------------------

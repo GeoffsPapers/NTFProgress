@@ -98,16 +98,11 @@ These are the keys steps towards releasing TPTP v9.0.0, with normal modal logic 
 
 The TPTP World~\cite{Sut17} is a well established infrastructure that supports research, 
 development, and deployment of Automated Theorem Proving (ATP) systems.
-The TPTP World includes the TPTP problem library,
-%~\cite{Sut09}, 
-the TSTP solution library,
-%~\cite{Sut10}, 
-standards for writing ATP problems and reporting ATP solutions,
-%~\cite{SS+06,Sut08-KEAPPA}, 
-tools and services for processing ATP problems and solutions,
-%~\cite{Sut10}, 
-and it supports the CADE ATP System Competition (CASC).
-%~\cite{Sut16}.
+The TPTP World includes the TPTP problem library~\cite{Sut09}, 
+the TSTP solution library~\cite{Sut10}, 
+standards for writing ATP problems and reporting ATP solutions~\cite{SS+06,Sut08-KEAPPA}, 
+tools and services for processing ATP problems and solutions~\cite{Sut10}, 
+and it supports the CADE ATP System Competition (CASC)~\cite{Sut16}.
 Various parts of the TPTP World have been deployed in a range of applications,
 in both academia and industry.
 The web page \href{https://www.tptp.org}{\tt www.tptp.org} provides access to all 
@@ -181,11 +176,13 @@ and in dynamic logics~\cite{HKT00} where the connectives are parameterized with 
 The form is
 {\tt \verb|{|\$}{\em name}{\tt (}{\em param$_1$}{\tt ,}{\em \ldots}{\tt ,}{\em param$_n$}{\tt )}{\tt \verb|}|}.
 If the connective is indexed the index is given as the first parameter prefixed with a {\tt \#},
-e.g., {\tt \{\$knows(\#manuel)\} @ (nothing)}\footnote{%
-As in \href{https://www.youtube.com/watch?v=ISD86-oM4Ow}{\tt www.youtube.com/watch?v=ISD86-oM4Ow}}.
+e.g., {\tt \{\$knows(\#manuel)\}~@~(nothing)}\footnote{%
+As in \href{https://www.youtube.com/watch?v=ISD86-oM4Ow}{\tt www.youtube.com/watch?v=ISD86-oM4Ow}},
+so that the connective is {\tt \$knows(\#manuel)} (and not the connective {\tt \$knows} applied
+to the index {\tt \#manuel}).
 All other parameters are key-value assignments.
 There are also short form unary connectives for unparameterised $\Box$ and $\Diamond$: {\tt [.]} 
-and {\tt <.>}, e.g., $\Box p$ can be written {\tt [.] p}.
+and {\tt <.>}, e.g., $\Box p$ can be written {\tt [.]~p}.
 
 In NXF the non-classical connectives are applied in a mixed 
 ``higher-order applied''/``first-order functional'' style, with the connectives applied to a
@@ -273,17 +270,15 @@ tff(possible_fruit,conjecture,
 \label{TPTP}
 
 The TPTP problem library of test problems for ATP systems has been extended in v9.0.0 to include
-problems in monomodal normal modal logic using the NX0 and NH0 languages.\footnote{%
-The numbers of problems are unknown at the time of writing, but by the time of release it will
-be in the 100s, not 1000s.}
-To start with, problems in monomodal normal modal logic are being collected, including problems 
+problems in the NX0 and NH0 languages.
+To start with, monomodal normal modal logic problems are being collected, including problems 
 from (the citations are just some examples)
 books~\cite{For94,FM98,Gir00,Sid10}, 
 conference and journal papers~\cite{Rei92,FH+98,Sto00,PN+21}, 
 and 
 use cases~\cite{BW14-ECAI,MR22}.
 
-The headers of the non-classical logic problems include relevant augmented information:
+The headers of the NX0 and NH0 problems include relevant augmented information:
 \begin{packed_itemize}
 \item The {\tt Syntax} field includes the number of non-classical connectives that are not indexed,
       and the number that are indexed.
@@ -305,19 +300,30 @@ The files in the {\tt Documents} directory have been correspondingly augmented:
       connectives in each problem.
 \end{packed_itemize}
 
+At the time of writing 152 NTF problems have been prepared for TPTP v9.0.0.
+There are 3 {\tt DAT} (data structures) problems, 12 {\tt GRA} (graph theory) problems, 
+1 {\tt KRS} (knowledge representation) problem, 12 {\tt LCL} (logic calculi) problems, 
+2 {\tt NLP} (natural language processing) problems, 7 {\tt PHI} (philosophy) problems,
+12 {\tt PLA} (planning) problems, 1 {\tt SWB} (semantic web) problem, 1 {\tt SWV} (software 
+verification) problem, and 101 {\tt SYO} (syntactic) problems.
+Thirteen problems are in the NH0 language, 139 in the NX0 language.
+Fourty-nine problems are propositional, 97 are first-order without equality, and 6 are
+first-order with equality.
+Fifty-six of the problems are known to be theorems, 45 countersatisfiable, and 51 have unknown
+status.
+
 %--------------------------------------------------------------------------------------------------
 \section{TSTP Solutions}
 \label{TSTP}
 
-The TSTP solution library~\cite{Sut07-CSR} contains solutions to TPTP problems, from a wide range
-of ATP systems.
+The TSTP solution library of solutions from ATP systems will be updated to include the results 
+of running KSP, nanoCoP-M, MleanCoP, and Leo-III (see Section~\ref{ATPSystems}) on the NXO and 
+NH0 problems in the TPTP problem library.
 The TPTP format for derivations~\cite{SS+06} can immediately be used for writing derivations in
 non-classical logic.
 The new TPTP format for interpretations~\cite{SS+23-LPAR} can be used to write Kripke models.
-However, while the TSTP solution library contains solutions for the NX0 and NH0 problems in the 
-TPTP problem library, the solutions are not in the TPTP format using NXF or NHF because
-at the time of writing none of the available ATP systems output their solutions in NX0 or NH0 
-(see Section~\ref{ATPSystems}).
+However, at the time of writing, none of the solutions are in the TPTP format using 
+NX0 or NH0, because none of the ATP systems output their solutions in NX0 or NH0.
 
 Leo-III outputs its proofs of NXF/NHF problems in TPTP format, but the proofs are in the language 
 of the embedded problems, i.e., TF0 or TH0 (see Section~\ref{Parsers}).
@@ -326,7 +332,7 @@ underlying ATP system, e.g., E~\cite{SCV19}.
 With minimal effort the NX0/NH0 input can be grafted onto Leo-III's proofs, and the details of
 the proof from underlying ATP added in.
 The result of that for the problem in Figure~\ref{NX0Example} is shown in Figure~\ref{NX0Proof} 
-(the type declarations are omitted for brevity).
+(the problem's type declarations are omitted for brevity).
 In this case the underlying ATP system was E.
 
 \begin{figure}[h!]
@@ -336,7 +342,7 @@ In this case the underlying ATP system was E.
 \begin{verbatim}
 %------------------------------------------------------------------------------------------
 tff(reflexive_M,axiom,
-    ! [X1: $world] : $accessible_world(X1,X1) ).
+    ! [X1: '$world'] : '$accessible_world'(X1,X1) ).
 
 tff(necessary_healthy_fruit_everywhere,axiom,
     ! [F: fruit] : ( {$necessary} @ ( healthy(F) ) ) ).
@@ -348,63 +354,63 @@ tff(possible_fruit,conjecture,
     ( {$possible} @ ( healthy(apple) & ~ rotten(banana) ) ) ).
 
 tff(possible_fruit_expanded,conjecture,
-    ? [X1: $world] :
-      ( $accessible_world($local_world,X1) & healthy(X1,apple) & ~ rotten(X1,banana) ),
+    ? [X1: '$world'] :
+      ( '$accessible_world'('$local_world',X1) & healthy(X1,apple) & ~ rotten(X1,banana) ),
     inference(expand,[status(thm)],[possible_fruit]) ).
 
 tff(necessary_healthy_fruit_everywhere_expanded,plain,
-    ! [X1: $world,X2: fruit,X3: $world] :
-      ( $accessible_world(X1,X3) => healthy(X3,X2) ),
+    ! [X1: '$world',X2: fruit,X3: '$world'] :
+      ( '$accessible_world'(X1,X3) => healthy(X3,X2) ),
     inference(expand,[status(thm)],[necessary_healthy_fruit_everywhere]) ).
 
 tff(fruit_possibly_not_rotten_expanded,plain,
-    ! [X1: $world,X2: fruit] :
-    ? [X3: $world] :
-      ( $accessible_world(X1,X3) & ~ rotten(X3,X2) ),
+    ! [X1: '$world',X2: fruit] :
+    ? [X3: '$world'] :
+      ( '$accessible_world'(X1,X3) & ~ rotten(X3,X2) ),
     inference(expand,[status(thm)],[fruit_possibly_not_rotten]) ).
 
 tff(c_0_4,negated_conjecture,
-    ~ ? [X1: $world] :
-        ( $accessible_world($local_world,X1) & healthy(X1,apple) & ~ rotten(X1,banana) ),
+    ~ ? [X1: '$world'] :
+        ( '$accessible_world'('$local_world',X1) & healthy(X1,apple) & ~ rotten(X1,banana) ),
     inference(assume_negation,[status(cth)],[possible_fruit_expanded]) ).
 
 tff(c_0_7,negated_conjecture,
-    ! [X4: $world] :
-      ( ~ $accessible_world($local_world,X4) | ~ healthy(X4,apple) | rotten(X4,banana) ),
+    ! [X4: '$world'] :
+      ( ~ '$accessible_world'('$local_world',X4) | ~ healthy(X4,apple) | rotten(X4,banana) ),
     inference(fof_nnf,[status(thm)],[c_0_4]) ).
 
 tff(c_0_5,plain,
-    ! [X8: $world,X9: fruit,X10: $world] :
-      ( ~ $accessible_world(X8,X10) | healthy(X10,X9) ),
+    ! [X8: '$world',X9: fruit,X10: '$world'] :
+      ( ~ '$accessible_world'(X8,X10) | healthy(X10,X9) ),
     inference(fof_nnf,[status(thm)],[necessary_healthy_fruit_everywhere_expanded]) ).
 
 tff(c_0_12,plain,
-    ! [X1: $world,X2: fruit] : healthy(X1,X2),
+    ! [X1: '$world',X2: fruit] : healthy(X1,X2),
     inference(spm,[status(thm)],[c_0_5,reflexive_M]) ).
 
 tff(c_0_13,plain,
-    ! [X5: $world,X6: fruit] :
-      ( $accessible_world(X5,esk1_2(X5,X6)) & ~ rotten(esk1_2(X5,X6),X6) ),
+    ! [X5: '$world',X6: fruit] :
+      ( '$accessible_world'(X5,esk1_2(X5,X6)) & ~ rotten(esk1_2(X5,X6),X6) ),
     inference(skolemize,[status(esa)],[fruit_possibly_not_rotten_expanded]) ).
 
-tff(c_0_14,negated_conjecture,
-    ! [X1: $world] :
-      ( rotten(X1,banana) | ~ $accessible_world($local_world,X1) ),
-    inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_07,c_0_12])]) ).
+tcf(c_0_14,negated_conjecture,
+    ! [X1: '$world'] :
+      ( rotten(X1,banana) | ~ '$accessible_world'('$local_world',X1) ),
+    inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_7,c_0_12])]) ).
 
-tff(c_0_15,plain,
-    ! [X1: $world,X2: fruit] : $accessible_world(X1,esk1_2(X1,X2)),
+tcf(c_0_15,plain,
+    ! [X1: '$world',X2: fruit] : '$accessible_world'(X1,esk1_2(X1,X2)),
     inference(split_conjunct,[status(thm)],[c_0_13]) ).
 
-tff(c_0_16,plain,
-    ! [X1: $world,X2: fruit] : ~ rotten(esk1_2(X1,X2),X2),
+tcf(c_0_16,plain,
+    ! [X1: '$world',X2: fruit] : ~ rotten(esk1_2(X1,X2),X2),
     inference(split_conjunct,[status(thm)],[c_0_13]) ).
 
-tff(c_0_17,negated_conjecture,
-    ! [X2: fruit] : rotten(esk1_2($local_world,X2),banana),
+tcf(c_0_17,negated_conjecture,
+    ! [X2: fruit] : rotten(esk1_2('$local_world',X2),banana),
     inference(spm,[status(thm)],[c_0_14,c_0_15]) ).
 
-tff(c_0_18,negated_conjecture,
+cnf(c_0_18,negated_conjecture,
     $false,
     inference(spm,[status(thm)],[c_0_16,c_0_17]),
     [proof] ).
@@ -448,7 +454,7 @@ tff(not_true,conjecture,
        & ~ rotten(banana) )) ) ).
 \end{verbatim}
 Figure~\ref{NX0Kripke} shows the worlds and the first world's Tarskian interpretation for 
-a Kripke (counter)model in NX0 (the type declarations are omitted for brevity).
+a Kripke (counter)model in NX0 (the problem's type declarations are omitted for brevity).
 The second world is the same except that bananas are not rotten.
 
 \begin{figure}[h!]
@@ -574,40 +580,76 @@ Sadly, at the time of writing, there are no ATP systems that output TPTP format 
 Kripke models for non-classical logic problems (which were hopefully given in TPTP format).
 Leo-III outputs its proofs in TPTP format, but the proofs are in the language of the embedded 
 problems, i.e., TF0 or TH0.
+The task of writing postprocessors that translate ATP systems' native proofs and models to the
+TPTP format might be future work, but providing those reduces the incentive for system developers
+to output TPTP format natively.
 
 %--------------------------------------------------------------------------------------------------
-\subsection{Viewers and Verifiers}
+\subsection{Verifiers and Viewers}
 \label{Verifiers}
 
-The TPTP World has several tools for processing proofs and interpretations in TPTP format
-(see Section~\ref{TSTP}).
-The IDV Interactive Derivation Viewer~\cite{TPS07} is able to display proofs.
+Although there are no ATP systems that output TPTP format proofs for non-classical problems yet, 
+the GDV derivation verifier~\cite{Sut06} is able verify such proofs -- it has been tested with
+examples created by hand.
+The AGMV model verifier \cite{SS+23-LPAR} can verify Kripke models in TPTP format.
+Again, it has been tested with examples created by hand.
+GDV and AGMV are available as standalone tools, and also in SystemOnTSTP (see 
+Section~\ref{Online}).
 
-Although there are no ATP systems that output TPTP format proofs for non-classical problems yet, the
-GDV derivation verifier~\cite{Sut06} is able verify such proofs.
-The AGMMV model verifier can verify Kripke models given in a NXF-based Kripke interpretation
-representation format.
+The IDV Interactive Derivation Viewer~\cite{TPS07} is able to display derivations in NX0 format.
+Figure~\ref{NX0ProofIDV} shows the derivation in Figure~\ref{NX0Proof}.
+The pointer is hovering over the node {\tt c\_0\_12}, whose formula shown in the lefthand panel
+expresses that in all worlds all fruit are healthy.
+The red and blue coloring show the ancestors and descendants of the node in the derivation.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{NX0ProofIDV.pdf}
+\caption{IDV view of the proof in Figure~\ref{NX0Proof}}
+\label{NX0ProofIDV}
+\end{figure}
+
+The IIV Interactive Interpretation Viewer~\cite{SS+23-LPAR,MS23-Poster} can display the
+Tarskian interpretation of a world in a Kripke model in TPTP format.
+Figure~\ref{NX0InterpretationW1} shows the interpretation of world {\tt w1} in 
+Figure~\ref{NX0Kripke}.
+The pointer is hovering over the node {\tt d\_banana}.
+The red {\tt \$o} ancestor indicates that {\tt rotten} has a boolean result type.
+The blue {\tt \$true} descendant indicates that the interpretation of {\tt rotten} for the
+domain element {\tt d\_banana} is {\em true}, and the blue {\tt \$o} descendant indicates that the
+domain type is boolean.
+A wrapper to view the worlds and accessibility relationship of a Kripke model is being developed,
+which will be linked to IIV to view a chosen world's Tarskian interpretation.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{NX0InterpretationW1.pdf}
+\caption{IIV view of the interpretation of world {\tt w1} in Figure~\ref{NX0Kripke}}
+\label{NX0InterpretationW1}
+\end{figure}
+
+IDV and IIV are available in SystemOnTSTP (see Section~\ref{Online}).
 
 %--------------------------------------------------------------------------------------------------
 \subsection{Online}
 \label{Online}
 
-and TPTP2T~\cite{Sut10}, 
-TPTP2T selects problems and solutions with specified syntactic and semantic characteristics,
-e.g., it could be used to list non-classical problems in NXF that are theorems, contain equality,
-and are easy to prove.
+The TPTP World has three online interfaces\footnote{%
+\href{https://www.tptp.org/cgi-bin/SystemOnTPTP}{\tt www.tptp.org/cgi-bin/SystemOnTPTP}}
+that provide access to ATP systems and tools:
+SystemB4TPTP for preparing formulae (often problems) for systems and tools, SystemOnTPTP for 
+submitting formulae to ATP systems, and SystemOnTSTP for processing solutions (often derivations
+or models) from systems and tools \cite{Sut00-CADE-17,Sut07-CSR}.
+SystemB4TPTP includes access to TPTP4X, the parsers, the KSP to TPTP translator, and NTFLET (see 
+Section~\ref{Parsers}).
+SystemOnTPTP includes the ATP systems KSP, nanoCoP-M, MleanCoP, and Leo-III.
+SystemOnTSTP includes GDV, AGMV, IDV, IIV, and the {\tt InterpretByATP} for evaluating a formula
+wrt a given interpretation (including Kripke interpretations) in TPTP format.
 
-SystemB4TPTP, SystemOnTPTP, SystemOnTSTP
-All these systems are available in SystemOnTPTP\footnote{%
-\href{https://www.tptp.org/cgi-bin/SystemOnTPTP}{\tt www.tptp.org/cgi-bin/SystemOnTPTP}}.
-
-The IIV Interactive Interpretation Viewer~\cite{MS23-Poster} can be used to interact with the
-Tarskian interpretations within the worlds of a Kripke model. 
-A wrapper to view the worlds and accessibility relationship of a Kripke model is being developed,
-which will be linked to IIV to view a chosen world's Tarskian interpretation.
-GDV, IDV, AGMMV, and IIV are all available in SystemOnTPTP.
-
-The Leo-III tools are also available in SystemOnTPTP.
+The TPTP2T tool for listing problems and solutions with specified syntactic and semantic 
+characteristics is available in a separate interface\footnote{%
+\href{https://tptp.org/cgi-bin/TPTP2T}{\tt tptp.org/cgi-bin/TPTP2T}}, e.g., it can be used to 
+list NX0 problems that are theorems, contain equality, and are easy to prove.
 
 %--------------------------------------------------------------------------------------------------
 \section{Conclusion}

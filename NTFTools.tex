@@ -126,6 +126,8 @@ doxastic~\cite{Hin62}, and
 instant-based temporal~\cite{GR22}.
 In this paper the languages and infrastructure are exemplified in normal modal logic~\cite{BBW06},
 as will be used in problems in TPTP v9.0.0.
+This paper extends~\cite{SF+22} -- there has been significant progress and development in the 
+last two years!
 
 \paragraph{Paper structure:}
 Section~\ref{TPTPLanguages} provides the key features of the TPTP languages for writing
@@ -392,6 +394,9 @@ The new TPTP format for interpretations~\cite{SS+23-LPAR}, written in
 {\em interpretation-formulae}, can be used to write Kripke models.
 However, at the time of writing, none of the solutions in the TSTP solution library are in the 
 TPTP format using NX0 or NH0, because none of the ATP systems output their solutions in NX0 or NH0.
+The task of writing postprocessors that translate ATP systems' native proofs and models to the
+TPTP format might be future work, but providing those reduces the incentive for system developers
+to output TPTP format natively.
 That said~\ldots
 
 Leo-III outputs its proofs of NXF/NHF problems in TPTP format, but the proofs are in the language 
@@ -648,34 +653,28 @@ ATP system for NXF/NHF (see Section~\ref{ATPSystems}).
 ATP for non-classical logics is a well established endeavour (particularly for propositional
 non-classical logics), but there are significantly fewer ATP systems available than for classical 
 logics.
-The ATP systems that we know about are KSP~\cite{NHD20,PN+21}, nanoCoP-M~\cite{Ott21}, 
+The ATP systems that we know of are KSP~\cite{NHD20,PN+21}, nanoCoP-M~\cite{Ott21}, 
 MleanCoP~\cite{Ott14}, MetTeL2~\cite{TSK12}, Leo-III~\cite{SB21}, LoTREC~\cite{FF+01}, and 
 MSPASS~\cite{HS00-TABLEAUX}.
 As noted in Section~\ref{Parsers}, translators have been implemented from the TPTP syntax to the 
 native syntaxes of KSP, nanoCoP-M, and MleanCoP, so that those systems can attempt the NX0 
 problems in the TPTP problem library.
 Leo-III can be used on NXF and NHF problems natively, via the embedding approach described 
-in Section~\ref{Parsers}~\cite{SS+23}.
+in Section~\ref{Parsers}.
 As noted there, any TPTP-compliant TXF/THF ATP system can replace Leo-III as the backend after
 the embedding, thus offering a suite of system variants.
-
-Sadly, at the time of writing, there are no ATP systems that output TPTP format proofs or 
-Kripke models for non-classical logic problems (which were hopefully given in TPTP format).
-Leo-III outputs its proofs in TPTP format, but the proofs are in the language of the embedded 
-problems, i.e., TF0 or TH0.
-The task of writing postprocessors that translate ATP systems' native proofs and models to the
-TPTP format might be future work, but providing those reduces the incentive for system developers
-to output TPTP format natively.
+A comparative study of the performance of these systems is given in~\cite{SS+23}.
 
 %--------------------------------------------------------------------------------------------------
 \subsection{Verifiers and Viewers}
 \label{Verifiers}
 
 The GDV derivation verifier~\cite{Sut06} can verify such proofs in TPTP format.
-GDV does structural verification, e.g., the derivation is acyclic, origin verification, i.e., 
-the leaves of the derivation are (derivable) from the problem formulae, inference verification
-using trusted ATP systems, e.g., the inferred formula is a theorem of the parents, and 
-completeness verification, e.g., the root of a refutation is {\em false}.
+GDV does structural verification, e.g., checking that the derivation is acyclic, origin 
+verification, i.e., checking that the leaves of the derivation are (derivable) from the problem 
+formulae, inference verification using trusted ATP systems, e.g., checking that an inferred 
+formula is a theorem of the parents, and completeness verification, e.g., checking that the root 
+of a refutation is {\em false}.
 As there are no ATP systems that output TPTP format proofs for non-classical problems yet, 
 it has been tested with examples created by hand.
 GDV is available as a standalone tool, and also in SystemOnTSTP (see Section~\ref{Online}).
@@ -687,11 +686,12 @@ interpretation-formula using a trusted theorem prover.
 AGMV has been tested with examples created by hand.
 AGMV is available as a standalone tool, and also in SystemOnTSTP (see Section~\ref{Online}).
 
-The IDV Interactive Derivation Viewer~\cite{TPS07} is able to display derivations in NX0 format.
+The IDV Interactive Derivation Viewer~\cite{TPS07} is able to display NX0 derivations in TPTP 
+format.
 Figure~\ref{NX0ProofIDV} shows the derivation in Figure~\ref{NX0Proof}.
-The pointer is hovering over the node {\tt c\_0\_12}, whose formula shown in the lefthand panel
+The pointer is hovering over the node {\tt c\_0\_12}, whose formula shown in the lefthand panel,
 expresses that in all worlds all fruit are healthy.
-The red and blue coloring show the ancestors and descendants of the node in the derivation.
+The red and blue coloring shows the ancestors and descendants of the node in the derivation.
 IDV is available in SystemOnTSTP (see Section~\ref{Online}).
 
 \begin{figure}[htbp]
@@ -701,7 +701,7 @@ IDV is available in SystemOnTSTP (see Section~\ref{Online}).
 \label{NX0ProofIDV}
 \end{figure}
 
-The IIV Interactive Interpretation Viewer~\cite{SS+23-LPAR,MS23-Poster} can display the
+The IIV Interactive Interpretation Viewer~\cite{SS+23-LPAR,MS23-Poster} is able to display the
 Tarskian interpretation of a world in a Kripke model in TPTP format.
 Figure~\ref{NX0InterpretationW1} shows the interpretation of world {\tt w1} in 
 Figure~\ref{NX0Kripke}.
@@ -725,47 +725,49 @@ which will be linked to IIV to view a chosen world's Tarskian interpretation.
 \subsection{Online}
 \label{Online}
 
-The TPTP World has three online interfaces\footnote{%
-\href{https://www.tptp.org/cgi-bin/SystemOnTPTP}{\tt www.tptp.org/cgi-bin/SystemOnTPTP}}
-that provide access to ATP systems and tools:
-SystemB4TPTP for preparing formulae (often problems) for systems and tools, SystemOnTPTP for 
-submitting formulae to ATP systems, and SystemOnTSTP for processing solutions (often derivations
-or models) from systems and tools \cite{Sut00-CADE-17,Sut07-CSR}.
-SystemB4TPTP includes access to TPTP4X, the parsers, the KSP to TPTP translator, and NTFLET (see 
-Section~\ref{Parsers}).
+The TPTP World has three online interfaces that provide access to ATP systems and tools
+\cite{Sut00-CADE-17,Sut07-CSR}:
+SystemB4TPTP\footnote{%
+\href{https://tptp.org/cgi-bin/SystemB4TPTP}{\tt tptp.org/cgi-bin/SystemB4TPTP}}
+for preparing formulae (often problems) for systems and tools, 
+SystemOnTPTP\footnote{%
+\href{https://tptp.org/cgi-bin/SystemOnTPTP}{\tt tptp.org/cgi-bin/SystemOnTPTP}}
+for submitting formulae to ATP systems, and 
+SystemOnTSTP\footnote{%
+\href{https://tptp.org/cgi-bin/SystemOnTSTP}{\tt tptp.org/cgi-bin/SystemOnTSTP}}
+for processing solutions (often derivations or models) from systems and tools.
+SystemB4TPTP includes access to TPTP4X, the BNF-based parsers, the KSP-to-TPTP translator, and 
+NTFLET (see Section~\ref{Parsers}).
 SystemOnTPTP includes the ATP systems KSP, nanoCoP-M, MleanCoP, and Leo-III.
-SystemOnTSTP includes GDV, AGMV, IDV, IIV, and the {\tt InterpretByATP} for evaluating a formula
-wrt a given interpretation (including Kripke interpretations) in TPTP format.
+SystemOnTSTP includes GDV, AGMV, IDV, IIV, and the {\tt InterpretByATP} tool for evaluating a 
+formula wrt an interpretation (including Kripke interpretations).
 
 The TPTP2T tool for listing problems and solutions with specified syntactic and semantic 
 characteristics is available in a separate interface\footnote{%
-\href{https://tptp.org/cgi-bin/TPTP2T}{\tt tptp.org/cgi-bin/TPTP2T}}, e.g., it can be used to 
-list NX0 problems that are theorems, contain equality, and are easy to prove.
+\href{https://tptp.org/cgi-bin/TPTP2T}{\tt tptp.org/cgi-bin/TPTP2T}}. 
+It can be used, e.g., to list NX0 problems that are theorems, contain equality, and are easy to 
+prove.
 
 %--------------------------------------------------------------------------------------------------
 \section{Conclusion}
 \label{Conclusion}
 
-This paper describes the latest extension of the TPTP World, providing languages and
-infrastructure for reasoning in non-classical logics.
-That includes the NXF and NHF languages with non-classical connectives, and a new type of
-of formula for specifying the logic to be used for reasoning.
-The NXF and NHF languages are used for writing problems in non-classical logics, and the
-TPTP format for writing Kripke interpretations is introduced.
-ATP systems that can reason in non-classical logic, particularly those that can read 
-problems written in TXF and THF, are listed, and tools for manipulating formulae written in 
-NXF and NHF are described.
-Altogether, this paper has described the keys steps towards releasing TPTP v9.0.0,
-with modal logic problems.
+This paper describes the latest extensions to the TPTP World, providing languages, problems,
+solutions, and infrastructure for non-classical logics.
+The topic covered are the TPTP languages for writing non-classical problems and solutions,
+non-classical problems for the TPTP problem library,
+solutions to such problems in the TSTP solution library,
+and ATP systems and tools for non-classical logics.
+These are the keys steps towards releasing TPTP v9.0.0, with normal modal logic problems.
 
 Ongoing and future work includes:
 \begin{packed_itemize}
 \item Collecting lots more problems in non-classical logics.
 \item Working with ATP system developers to upgrade their systems to natively read problems 
-      written in NXF and NHF, and to produce proofs and models in NXF or NHF.
+      written in NXF and NHF, and to produce proofs and models in TPTP format.
 \item Optimizing the NTFLET embeddings to automatically recognize language fragments for which
       TXF embedding is possible.
-\item Producing an interactive viewer for Kripke interpretations written in TPTP-format.
+\item Producing a complete interactive viewer for Kripke interpretations written in TPTP-format.
 \item Standardizing the embedding of further specific non-classical logics in NXF/NHF (including
       choosing connective names, and allowed parameters of the logic specification).
 \item A non-classical division of CASC.

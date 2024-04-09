@@ -49,11 +49,11 @@ email=geoff@cs.miami.edu
 ]
 \address[3]{University of Miami, USA}
 \begin{abstract}
-The TPTP World is a well established infrastructure that supports research, 
-development, and deployment of Automated Theorem Proving (ATP) systems.
-The development of the TPTP World has until now focused on classical logic, while many 
-real-world applications of ATP also require non-classical reasoning. 
-This paper describes the latest extension of the TPTP World, providing languages, problems,
+The TPTP World is a well established infrastructure that supports research, development, and 
+deployment of Automated Theorem Proving (ATP) systems.
+Until now the TPTP World has focused on classical logic, while many real-world applications of 
+ATP also require non-classical reasoning. 
+This paper describes the latest extensions to the TPTP World, providing languages, problems,
 solutions, and infrastructure for non-classical logics.
 These are the keys steps towards releasing TPTP v9.0.0, with normal modal logic problems.
 \end{abstract}
@@ -108,12 +108,13 @@ in both academia and industry.
 The web page \href{https://www.tptp.org}{\tt www.tptp.org} provides access to all 
 components.
 
-The development of the TPTP World has until now focused on classical logic, while many 
-real-world applications of ATP also require non-classical reasoning. 
+Until now the TPTP World has focused on classical logic, while many real-world applications of 
+ATP also require non-classical reasoning. 
 These applications include artificial intelligence (e.g., knowledge representation, planning, 
 multi-agent systems), philosophy (e.g., formal ethics, metaphysics), natural language semantics 
 (e.g., generalized quantifiers, modalities), and computer science (e.g., software and hardware 
 verification).
+ADD CITATIONS - ASKED CHRIS.
 This paper describes the latest extension of the TPTP World, providing languages and
 infrastructure for reasoning in non-classical logics~\cite{Pri08,Gob01}.
 The non-classical logics supported so far are
@@ -141,13 +142,13 @@ TPTP World.
 
 The TPTP languages for first-order clause normal form (CNF)~\cite{SS98-JAR}, full first-order 
 form (FOF)~\cite{Sut09}, typed-first order form (TFF)~\cite{SS+12,BP13-TFF1}, and typed 
-higher-order form (THF)~\cite{SB10,KSR16} are by now well known and regularly documented.
+higher-order form (THF)~\cite{SB10,KSR16} are by now well known and documented.
 An overview that is relevant to this paper is provided in~\cite{SF+22}, and the detailed
 syntax of the languages is given in an extended BNF\footnote{%
 \label{BNF}\href{https://www.tptp.org/TPTP/SyntaxBNF.html}{\tt www.tptp.org/TPTP/SyntaxBNF.html}} 
 \cite{VS06}.
 As a simple reminder, here is an example of a monomorphic typed extended first-order (TX0) 
-annotated formula~\ldots
+annotated formula:
 \[
 \begin{minipage}{\textwidth}
 \begin{verbatim}
@@ -160,18 +161,20 @@ annotated formula~\ldots
 \end{minipage}
 \]
 
-The non-classical typed extended first-order form (NXF) and non-classical typed higher-order 
-form (NHF) languages are the TPTP languages for non-classical logics.
+The new non-classical typed form (NTF) family of TPTP languages for non-classical logics has two 
+top level variants: the non-classical typed extended first-order form (NXF), and the non-classical 
+typed higher-order form (NHF).
 They are respectively based on the typed extended first-order (TXF) and typed higher-order (THF)
-languages, and correspondingly have mono\-morphic (NX0, NH0) and polymorphic (NX1, NH1) variants.
+languages, and correspondingly have mono\-morphic (NX0, NH0) and polymorphic (NX1, NH1) 
+subvariants.
 
-The non-classical connectives of NXF and NHF have the form {\tt \{\$}{\em name}{\tt \}}.
+The non-classical connectives of NTF have the form {\tt \{\$}{\em name}{\tt \}}.
 Examples are {\tt \{\$box\}} ($\Box$ in logic texts), {\tt \{\$dia\}} ($\Diamond$ in logic texts), 
 {\tt \{\$possible\}}, {\tt \{\$necessary\}}, {\tt \{\$obligatory\}}, {\tt \{\$permissible\}}, 
 {\tt \{\$knows\}}, {\tt \{\$believes\}}, etc.
 A connective may optionally be parameterized to reflect more complex non-classical connectives,
-e.g., in multi-modal logics where the modal operators are indexed, in epistemic logics
-where the knowledge operators can specify the agents under consideration,
+e.g., in multi-modal logics where the modal operators are indexed~\cite{Bal98}, in epistemic logics
+where the knowledge operators can specify the agents under consideration~\cite{vDH15},
 and in dynamic logics~\cite{HKT00} where the connectives are parameterized with (complex) programs.
 The form is
 {\tt \verb|{|\$}{\em name}{\tt (}{\em param$_1$}{\tt ,}{\em \ldots}{\tt ,}{\em param$_n$}{\tt )}{\tt \verb|}|}.
@@ -180,45 +183,25 @@ e.g., {\tt \{\$knows(\#manuel)\}~@~(nothing)}\footnote{%
 As in \href{https://www.youtube.com/watch?v=ISD86-oM4Ow}{\tt www.youtube.com/watch?v=ISD86-oM4Ow}},
 so that the connective is {\tt \$knows(\#manuel)} (and not the connective {\tt \$knows} applied
 to the index {\tt \#manuel}).
-All other parameters are key-value assignments.
+All other parameters are key-value assignments, e.g., to list the agents of common knowledge the
+form might be {\tt \{\$common(\$agents:=[alice,bob,claire])\}}.
 There are also short form unary connectives for unparameterised $\Box$ and $\Diamond$: {\tt [.]} 
 and {\tt <.>}, e.g., $\Box p$ can be written {\tt [.]~p}.
 
 In NXF the non-classical connectives are applied in a mixed 
-``higher-order applied''/``first-order functional'' style, with the connectives applied to a
+higher-order-applied/first-order-functional style, with the connectives applied to a
 {\tt ()}ed list of arguments.\footnote{%
-This slightly unusual form was chosen to reflect the first-order functional style, but by making
+This slightly unusual form was chosen to reflect the first-order functional style, and by making
 the application explicit the formulae can be parsed in Prolog -- a long standing principle of the
 TPTP languages~\cite{SZS04}.}
 In NHF the non-classical connectives are applied in usual higher-order style, with curried 
 function applications using the application operator {\tt @}.
-Full specification of the connectives and their use in formulae is in the 
-BNF
+Full specification of the connectives and their use in formulae is in the BNF
 % \footnotemark[\ref{BNF}] 
 starting at {\tt <nxf\_atom>} and {\tt <thf\_defined\_atomic>}.
 Figure~\ref{NX0Example} shows an example NX0 problem in alethic modal logic (the {\tt semantics} 
-formula is explained next).
-
-In non-classical logics the same language can be used for formulae while different logics are 
-used for reasoning.
-It is therefore necessary to provide \mbox{(meta-)} information that specifies the
-logic to be used.
-A TPTP annotated formula with the role \texttt{logic} is used for this, with a ``logic 
-specification'' as the formula.
-A logic specification consists of a defined logic (family) name identified with a list of 
-properties (note, the property names have been improved since their presentation in~\cite{SF+22}).
-The {\tt \$domains} property specifies whether each quantification domain is constant, varying,
-cumulative, or decreasing, across the accessibility relation.
-The {\tt \$designation} property specifies whether symbols are interpreted rigidly, i.e., 
-interpreted as the same domain element in every world, or flexibly, i.e., possibly interpreted 
-as different domain elements in different worlds. 
-The {\tt \$terms} property specifies whether interpretation is local to the current world or
-global to all worlds.
-The {\tt \$modalities} property specifies properties of the connectives, either as a well-known 
-logic system, e.g., the modal system {\bf S5}, or as axiom schemes, e.g., the modal axiom {\bf 5} 
-as in~\cite{Gar18}.
-Further details of the logic specifications are in~\cite{SF+22}.
-Figure~\ref{NX0Example} includes a logic specification in NXF.
+formula is explained next), and Figure~\ref{NH0Example} shows the axiom and conjecture formulae 
+in NH0.
 
 \begin{figure}[h!]
 \small
@@ -256,14 +239,59 @@ tff(rotten_banana_here,axiom-local,
 
 %----Prove it's possible for apples to be healthy and bananas not rotten
 tff(possible_fruit,conjecture,
-    ( {$possible}
-    @ ( healthy(apple)
-      & ~ rotten(banana) ) ) ).
+    ( {$possible} @ ( healthy(apple) & ~ rotten(banana) ) ) ).
 %------------------------------------------------------------------------
 \end{verbatim}
 \caption{NX0 example}
 \label{NX0Example}
 \end{figure}
+
+\begin{figure}[h!]
+\small
+\setstretch{0.9}
+\begin{verbatim}
+%------------------------------------------------------------------------
+thf(apple_not_banana,axiom,
+    apple != banana ).
+
+thf(necessary_healthy_fruit_everywhere,axiom,
+    ! [F: fruit] : ( {$necessary} @ ( healthy @ F ) ) ).
+
+thf(fruit_possibly_not_rotten,axiom,
+    ! [F: fruit] : ( {$possible} @ ( ~ ( rotten @ F ) ) ) ).
+
+thf(rotten_banana_here,axiom-local,
+    rotten @ banana ).
+
+thf(not_true,conjecture,
+    ( {$possible} @ ( ( healthy @ apple ) & ~ ( rotten @ banana ) ) ) ).
+%------------------------------------------------------------------------
+\end{verbatim}
+\caption{NH0 formulae}
+\label{NH0Example}
+\end{figure}
+
+In non-classical logics the same language can be used for formulae while different logics are 
+used for reasoning.
+It is therefore necessary to provide \mbox{(meta-)} information that specifies the
+logic to be used.
+A TPTP annotated formula with the role \texttt{logic} is used for this, with a {\em logic 
+specification} as the formula.
+A logic specification consists of a defined logic (family) name identified with a list of 
+properties\footnote{%
+The property names have been improved since their presentation in~\cite{SF+22}}.
+The {\tt \$domains} property specifies whether each quantification domain is constant, varying,
+cumulative, or decreasing, across the accessibility relation.
+The {\tt \$designation} property specifies whether symbols are interpreted rigidly, i.e., 
+interpreted as the same domain element in every world, or flexibly, i.e., possibly interpreted 
+as different domain elements in different worlds. 
+The {\tt \$terms} property specifies whether interpretation is local to the current world or
+global to all worlds.
+The {\tt \$modalities} property specifies properties of the connectives, either as a well-known 
+logic system, e.g., the modal system {\bf S5}, or as axiom schemes, e.g., the modal axiom {\bf 5} 
+as in~\cite{Gar18}.
+Further details of the logic specifications are in~\cite{SF+22}.
+Figure~\ref{NX0Example} includes a logic specification in NXF.
 
 %--------------------------------------------------------------------------------------------------
 \section{TPTP Problems}
@@ -278,21 +306,60 @@ conference and journal papers~\cite{Rei92,FH+98,Sto00,PN+21},
 and 
 use cases~\cite{BW14-ECAI,MR22}.
 
-The headers of the NX0 and NH0 problems include relevant augmented information:
+Each problem file in the TPTP problem library has three parts: a header, optional includes, and 
+annotated formulae. 
+The header section contains information for users, formatted as comments identifying and 
+describing the problem, providing information about occurrences of the problem in the literature 
+and elsewhere, providing semantic and syntactic characteristics of the problem, and finally
+comments and bugfix information. 
+The include section contains include directives for axiom files to avoid duplication of formulae 
+in commonly used axiomatizations. 
+Annotated formulae are described in Section~\ref{TPTPLanguages}.
+
+The headers of the NX0 and NH0 problems include relevant augmented information.
+Figure~\ref{NX0Header} shows the {\tt Syntax} and {\tt SPC} (Specialist Problem Class\footnote{%
+The problems in the TPTP library are divided into Specialist Problem Classes (SPCs) – classes 
+of problems that are homogeneous wrt recognizable logical, language, and syntactic
+characteristics}) fields for the problem in Figure~\ref{NX0Example}.
+The relevant new information is:
 \begin{packed_itemize}
-\item The {\tt Syntax} field includes the number of non-classical connectives that are not indexed,
-      and the number that are indexed.
-      For example, the problem in Figure~\ref{NX0Example} has four non-indexed connectives and
-      no indexed connectives, written ``{\tt 4 \{.\};   0 \{\#\}}'' in the header field.
-\item The {\tt SPC} (Specialist Problem Class\footnote{%
-      The problems in the TPTP library are divided into Specialist Problem Classes (SPCs) – 
-      classes of problems that are homogeneous wrt recognizable logical, language, and syntactic 
-      characteristics}) field has values for non-classical logic problems. 
-      For example, the SPC of the problem in Figure~\ref{NX0Example} is {\tt NX0\_THM\_NEQ\_NAR} 
-      -- it's in the NX0 language, is a theorem, and there is no use of equality or arithmetic.
+\item The number of non-classical connectives, indexed and unindexed.
+      For example, as shown in Figure~\ref{NX0Header}, the problem in Figure~\ref{NX0Example} 
+      has three non-indexed connectives and no indexed connectives, written 
+      ``{\tt 4 \{.\};   0 \{\#\}}'' in the header field.
+\item The {\tt SPC} field has values for non-classical logic problems. 
+      For example, as shown in Figure~\ref{NX0Header}, the SPC of the problem in 
+      Figure~\ref{NX0Example} is {\tt NX0\_THM\_NEQ\_NAR} -- it's in the NX0 language, is a 
+      theorem, and there is no use of equality or arithmetic.
 \end{packed_itemize}
 
-The files in the {\tt Documents} directory have been correspondingly augmented:
+\begin{figure}[h!]
+\small
+\setstretch{0.9}
+\begin{verbatim}
+%------------------------------------------------------------------------------
+% Syntax   : Number of formulae    :   10 (   2 unt;   5 typ;   0 def)
+%            Number of atoms       :   12 (   1 equ)
+%            Maximal formula atoms :    2 (   2 avg)
+%            Number of connectives :   10 (   3   ~;   0   |;   1   &)
+%                                         (   0 <=>;   0  =>;   0  <=;   0 <~>)
+%                                         (   3 {.};   0 {#})
+%            Maximal formula depth :    3 (   2 avg)
+%            Maximal term depth    :    1 (   1 avg)
+%            Number of FOOLs       :    3 (   3 fml;   0 var)
+%            Number of types       :    2 (   1 usr)
+%            Number of type conns  :    2 (   2   >;   0   *;   0   +;   0  <<)
+%            Number of predicates  :    5 (   2 usr;   0 prp; 1-2 aty)
+%            Number of functors    :    2 (   2 usr;   2 con; 0-0 aty)
+%            Number of variables   :    2 (   2   !;   0   ?;   2   :)
+% SPC      : NX0_THM_EQU_NAR
+%------------------------------------------------------------------------------
+\end{verbatim}
+\caption{NX0 header fields}
+\label{NX0Header}
+\end{figure}
+
+The files in the {\tt Documents} directory have been augmented:
 \begin{packed_itemize}
 \item The {\tt TFFSynopsis}, {\tt THFSynopsis}, and {\tt OverallSynopsis} files give the numbers 
       of non-classical logic problems.
@@ -317,13 +384,15 @@ status.
 \label{TSTP}
 
 The TSTP solution library of solutions from ATP systems will be updated to include the results 
-of running KSP, nanoCoP-M, MleanCoP, and Leo-III (see Section~\ref{ATPSystems}) on the NXO and 
-NH0 problems in the TPTP problem library.
+of running the ATP systems KSP, nanoCoP-M, MleanCoP, and Leo-III (see Section~\ref{ATPSystems}) 
+on the NXO and NH0 problems in the TPTP problem library.
 The TPTP format for derivations~\cite{SS+06} can immediately be used for writing derivations in
 non-classical logic.
-The new TPTP format for interpretations~\cite{SS+23-LPAR} can be used to write Kripke models.
-However, at the time of writing, none of the solutions are in the TPTP format using 
-NX0 or NH0, because none of the ATP systems output their solutions in NX0 or NH0.
+The new TPTP format for interpretations~\cite{SS+23-LPAR}, written in 
+{\em interpretation-formulae}, can be used to write Kripke models.
+However, at the time of writing, none of the solutions in the TSTP solution library are in the 
+TPTP format using NX0 or NH0, because none of the ATP systems output their solutions in NX0 or NH0.
+That said~\ldots
 
 Leo-III outputs its proofs of NXF/NHF problems in TPTP format, but the proofs are in the language 
 of the embedded problems, i.e., TF0 or TH0 (see Section~\ref{Parsers}).
@@ -331,8 +400,8 @@ It is also often the case that the proof includes one large step resulting from 
 underlying ATP system, e.g., E~\cite{SCV19}.
 With minimal effort the NX0/NH0 input can be grafted onto Leo-III's proofs, and the details of
 the proof from underlying ATP added in.
-The result of that for the problem in Figure~\ref{NX0Example} is shown in Figure~\ref{NX0Proof} 
-(the problem's type declarations are omitted for brevity).
+The resulting proof for the problem in Figure~\ref{NX0Example} is shown in Figure~\ref{NX0Proof} 
+(the type declarations are omitted for brevity).
 In this case the underlying ATP system was E.
 
 \begin{figure}[h!]
@@ -426,7 +495,7 @@ Four new defined symbols are used in Kripke interpretation-formulae:
 \begin{packed_itemize}
 \item A defined type {\tt \$world} is used for the worlds of the interpretation.
       Different constants of type {\tt \$world} are known to be unequal (but as yet no ATP 
-      systems implement that, so it's necessary to encode that explicitly using inequalities of 
+      systems implement that, so it's necessary to encode that explicitly using inequalities or 
       the {\tt \$distinct} predicate).
 \item A defined predicate {\tt \$accessible\_world} of type {\tt (\$world~*~\$world)~>~\$o}
       is used to specify the accessibility relation between worlds.
@@ -440,8 +509,14 @@ A Kripke interpretation-formula is a conjunction of specification of the worlds,
 distinctness of the worlds,
 the accessibility relation,
 the local world if any,
-for each world, its Tarskian interpretation (also in the new TPTP format for interpretations).
-The interpretation-formulae are preceded by the necessary type declarations.
+and
+for each world its Tarskian interpretation (also in the new TPTP format for interpretations).
+The interpretation-formula is preceded by the necessary type declarations.
+The {\tt logic} specification of the problem is included as a comment because the
+interpretation-formula under specifies the logic, e.g., it's usually not possible to see whether
+the interpretation-formula exemplifies modal system K or modal system S5 -- in both cases the
+interpretation-formula could interpret the accessibility relation as equivalence (this is 
+required for S5 but it is also OK for K).
 
 The problem in Figure~\ref{NX0Example} can be made into a non-theorem by changing the conjecture
 to
@@ -454,7 +529,7 @@ tff(not_true,conjecture,
        & ~ rotten(banana) )) ) ).
 \end{verbatim}
 Figure~\ref{NX0Kripke} shows the worlds and the first world's Tarskian interpretation for 
-a Kripke (counter)model in NX0 (the problem's type declarations are omitted for brevity).
+a Kripke (counter)model in NX0 (the type declarations are omitted for brevity).
 The second world is the same except that bananas are not rotten.
 
 \begin{figure}[h!]
@@ -467,6 +542,14 @@ The second world is the same except that bananas are not rotten.
 % tff(rotten_decl,type,rotten: fruit > $o).
 \begin{verbatim}
 %------------------------------------------------------------------------
+%----The logic specification was ...
+% tff(semantics,logic,
+%     $alethic_modal ==
+%       [ $domains == $constant,
+%         $designation == $rigid,
+%         $terms == $local,
+%         $modalities == $modal_system_M ] ).
+
 tff(d_fruit_type,type,d_fruit: $tType).
 tff(d2fruit_decl,type, d2fruit: d_fruit > fruit ).
 tff(d_apple_decl,type,d_apple: d_fruit).
@@ -516,18 +599,18 @@ tff(fruity_worlds,interpretation,
 \section{Software Support}
 \label{SystemsTools}
 
-Software support has been developed, and continues to be developed, for access to and 
-manipulation of NXF and NHF logic problems, ATP systems, solutions, and processing tools.
+TPTP World software support for non-classical logiocs has been developed, and continues to be 
+developed, for access to and manipulation of problems, ATP systems, solutions, and processing 
+tools.
 All the software is freely available from GitHub\footnote{%
-\href{https://github.com/TPTPWorld}{\tt github.com/TPTPWorld}}, and available for use in 
+\href{https://github.com/TPTPWorld}{\tt github.com/TPTPWorld}}, and mostly available for use in 
 SystemOnTPTP (see Section~\ref{Online}).
 
 %--------------------------------------------------------------------------------------------------
 \subsection{Parsers and Printers}
 \label{Parsers}
 
-The TPTP World's TPTP4X utility and the BNF-based suite of parsers~\cite{VS06} can parse
-NXF and NHF formulae.
+The TPTP4X utility and the BNF-based suite of parsers~\cite{VS06} can parse NXF and NHF formulae.
 TPTP4X parses problems and solutions, can apply various transformations, and pretty-prints the 
 formulae.
 The BNF-based parsers offer stricter parsing than TPTP4X, can present the parse trees in
@@ -547,8 +630,8 @@ stand-alone parsing library {\tt scala-tptp-parser}~\cite{Ste21}.
 In order to support existing ATP systems that do not (yet) read TPTP NX0 or NH0 formulae,
 some syntax translators have been implemented to convert NX0 formulae into the systems'
 native syntaxes.
-Thus far front-end translators have implemented for K\raisebox{-3pt}{S}P, nanoCoP-M, and MleanCoP.
-Thankfully this has been quite easy, and could be implemented in {\tt sed}.
+Thus far front-end translators have implemented for KSP, nanoCoP-M, and MleanCoP.
+Thankfully this has been quite easy, and implemented in {\tt sed}.
 In a related effort, the NTFLET Logic Embedding Tool~\cite{Ste22} does a shallow embedding of 
 NXF problems into TXF or THF, and NHF problems into THF~\cite{BP13,BR13,GSB17,GS18}.
 By default NTFLET produces TX0 or TH0, but it can optionally produce polymorphic TH1 or TX1
@@ -565,12 +648,12 @@ ATP system for NXF/NHF (see Section~\ref{ATPSystems}).
 ATP for non-classical logics is a well established endeavour (particularly for propositional
 non-classical logics), but there are significantly fewer ATP systems available than for classical 
 logics.
-The ATP systems that we know about are K\raisebox{-3pt}{S}P~\cite{NHD20,PN+21}, 
-nanoCoP-M~\cite{Ott21}, MleanCoP~\cite{Ott14}, MetTeL2~\cite{TSK12}, Leo-III~\cite{SB21}, 
-LoTREC~\cite{FF+01}, and MSPASS~\cite{HS00-TABLEAUX}.
+The ATP systems that we know about are KSP~\cite{NHD20,PN+21}, nanoCoP-M~\cite{Ott21}, 
+MleanCoP~\cite{Ott14}, MetTeL2~\cite{TSK12}, Leo-III~\cite{SB21}, LoTREC~\cite{FF+01}, and 
+MSPASS~\cite{HS00-TABLEAUX}.
 As noted in Section~\ref{Parsers}, translators have been implemented from the TPTP syntax to the 
-native syntaxes of K\raisebox{-3pt}{S}P, nanoCoP-M, and MleanCoP, so that those systems can
-attempt the NX0 problems in the TPTP problem library.
+native syntaxes of KSP, nanoCoP-M, and MleanCoP, so that those systems can attempt the NX0 
+problems in the TPTP problem library.
 Leo-III can be used on NXF and NHF problems natively, via the embedding approach described 
 in Section~\ref{Parsers}~\cite{SS+23}.
 As noted there, any TPTP-compliant TXF/THF ATP system can replace Leo-III as the backend after
@@ -588,19 +671,28 @@ to output TPTP format natively.
 \subsection{Verifiers and Viewers}
 \label{Verifiers}
 
-Although there are no ATP systems that output TPTP format proofs for non-classical problems yet, 
-the GDV derivation verifier~\cite{Sut06} is able verify such proofs -- it has been tested with
-examples created by hand.
+The GDV derivation verifier~\cite{Sut06} can verify such proofs in TPTP format.
+GDV does structural verification, e.g., the derivation is acyclic, origin verification, i.e., 
+the leaves of the derivation are (derivable) from the problem formulae, inference verification
+using trusted ATP systems, e.g., the inferred formula is a theorem of the parents, and 
+completeness verification, e.g., the root of a refutation is {\em false}.
+As there are no ATP systems that output TPTP format proofs for non-classical problems yet, 
+it has been tested with examples created by hand.
+GDV is available as a standalone tool, and also in SystemOnTSTP (see Section~\ref{Online}).
+
 The AGMV model verifier \cite{SS+23-LPAR} can verify Kripke models in TPTP format.
-Again, it has been tested with examples created by hand.
-GDV and AGMV are available as standalone tools, and also in SystemOnTSTP (see 
-Section~\ref{Online}).
+AGMV does syntax and type checking, verifies that the interpretation-formula is satisfiable
+using a trusted model finder, and verifies that the problem formulae are theorems of the
+interpretation-formula using a trusted theorem prover.
+AGMV has been tested with examples created by hand.
+AGMV is available as a standalone tool, and also in SystemOnTSTP (see Section~\ref{Online}).
 
 The IDV Interactive Derivation Viewer~\cite{TPS07} is able to display derivations in NX0 format.
 Figure~\ref{NX0ProofIDV} shows the derivation in Figure~\ref{NX0Proof}.
 The pointer is hovering over the node {\tt c\_0\_12}, whose formula shown in the lefthand panel
 expresses that in all worlds all fruit are healthy.
 The red and blue coloring show the ancestors and descendants of the node in the derivation.
+IDV is available in SystemOnTSTP (see Section~\ref{Online}).
 
 \begin{figure}[htbp]
 \centering
@@ -618,6 +710,7 @@ The red {\tt \$o} ancestor indicates that {\tt rotten} has a boolean result type
 The blue {\tt \$true} descendant indicates that the interpretation of {\tt rotten} for the
 domain element {\tt d\_banana} is {\em true}, and the blue {\tt \$o} descendant indicates that the
 domain type is boolean.
+IIV is available in SystemOnTSTP (see Section~\ref{Online}).
 A wrapper to view the worlds and accessibility relationship of a Kripke model is being developed,
 which will be linked to IIV to view a chosen world's Tarskian interpretation.
 
@@ -627,8 +720,6 @@ which will be linked to IIV to view a chosen world's Tarskian interpretation.
 \caption{IIV view of the interpretation of world {\tt w1} in Figure~\ref{NX0Kripke}}
 \label{NX0InterpretationW1}
 \end{figure}
-
-IDV and IIV are available in SystemOnTSTP (see Section~\ref{Online}).
 
 %--------------------------------------------------------------------------------------------------
 \subsection{Online}
@@ -667,7 +758,7 @@ NXF and NHF are described.
 Altogether, this paper has described the keys steps towards releasing TPTP v9.0.0,
 with modal logic problems.
 
-Ongoing and future work includes~\ldots
+Ongoing and future work includes:
 \begin{packed_itemize}
 \item Collecting lots more problems in non-classical logics.
 \item Working with ATP system developers to upgrade their systems to natively read problems 

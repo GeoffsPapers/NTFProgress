@@ -15,23 +15,38 @@
 \usepackage{amsmath,amssymb}
 \usepackage{upquote}
 \renewcommand\UrlFont{\color{blue}\rmfamily}
-% \renewcommand{\arraystretch}{0.8}
-\renewcommand{\floatpagefraction}{0.9}
-\renewcommand{\textfloatsep}{2.0ex}
-\renewcommand{\dbltextfloatsep}{2.0ex}
-\setlength{\tabcolsep}{3pt}
+
+\newcommand{\smalltt}[1]{\small \texttt{#1}}
 \newenvironment{packed_itemize}{
-\vspace*{-0.5em}
+\vspace*{-0.3em}
 \begin{itemize}
 \setlength{\partopsep}{0pt}
 \setlength{\itemsep}{1pt}
 \setlength{\parskip}{0pt}
 \setlength{\parsep}{0pt}
 }{\end{itemize}}
-
-\begin{document}
+\newenvironment{packed_enumerate}{
+\vspace*{-0.3em}
+\begin{enumerate}
+\setlength{\partopsep}{0pt}
+\setlength{\itemsep}{1pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+}{\end{enumerate}}
+%----Suppress extra space in texttt mode
+\AddToHook{cmd/ttfamily/after}{\frenchspacing}
+% \renewcommand{\arraystretch}{0.8}
+\renewcommand{\floatpagefraction}{0.9}
+\setlength{\floatsep}{2.0pt plus 2.0pt minus 2.0pt}
+\setlength{\textfloatsep}{5.0pt plus 2.0pt minus 0.0pt}
+\renewcommand{\dbltextfloatsep}{2.0ex}
+% \renewcommand{\textfraction}{0.07}
+% \renewcommand{\topfraction}{0.9}
+% \renewcommand{\bottomfraction}{0.9}
+\setlength{\tabcolsep}{3pt}
 
 %----CEUR style
+\begin{document}
 \copyrightyear{2024}
 \copyrightclause{Copyright for this paper by its authors.
   Use permitted under Creative Commons License Attribution 4.0 International (CC BY 4.0).}
@@ -48,7 +63,7 @@ email=alexander.steen@uni-greifswald.de,
 orcid=0000-0001-7116-9338,
 email=geoff@cs.miami.edu
 ]
-\address[3]{University of Miami, USA}
+\address[2]{University of Miami, USA}
 \begin{abstract}
 The TPTP World is a well established infrastructure that supports research, development, and 
 deployment of Automated Theorem Proving (ATP) systems.
@@ -182,14 +197,14 @@ and in dynamic logics~\cite{HKT00} where the connectives are parameterized with 
 The form is
 {\tt \verb|{|\$}{\em name}{\tt (}{\em param$_1$}{\tt ,}{\em \ldots}{\tt ,}{\em param$_n$}{\tt )}{\tt \verb|}|}.
 If the connective is indexed the index is given as the first parameter prefixed with a {\tt \#},
-e.g., {\tt \{\$knows(\#manuel)\}~@~(nothing)}\footnote{%
+e.g., {\tt \{\$knows(\#manuel)\}\,@\,(nothing)}\footnote{%
 As in \href{https://www.youtube.com/watch?v=ISD86-oM4Ow}{\tt www.youtube.com/watch?v=ISD86-oM4Ow}},
 so that the connective is {\tt \$knows(\#manuel)} (and not the connective {\tt \$knows} applied
 to the index {\tt \#manuel}).
 All other parameters are key-value assignments, e.g., to list the agents of common knowledge the
 form might be {\tt \{\$common(\$agents:=[alice,bob,claire])\}}.
 There are also short form unary connectives for unparameterised $\Box$ and $\Diamond$: {\tt [.]} 
-and {\tt <.>}, e.g., $\Box p$ can be written {\tt [.]~p}.
+and {\tt <.>}, e.g., $\Box p$ can be written {\tt [.]\,p}.
 
 In NXF the non-classical connectives are applied in a mixed 
 higher-order-applied/first-order-functional style, with the connectives applied to a
@@ -508,11 +523,11 @@ new hybrid defined symbols:
       Different constants of type {\tt \$world} are known to be unequal (but as yet no ATP 
       systems implement that, so it's necessary to encode that explicitly using inequalities or 
       the {\tt \$distinct} predicate).
-\item A defined predicate {\tt \$accessible\_world} of type {\tt (\$world~*~\$world)~>~\$o}
+\item A defined predicate {\tt \$accessible\_world} of type {\tt (\$world\,*\,\$world)\,>\,\$o}
       is used to specify the accessibility relation between worlds.
-\item A defined constant {\tt \$local\_world} of type {\tt \$world~>~\$o} is used to specify 
+\item A defined constant {\tt \$local\_world} of type {\tt \$world\,>\,\$o} is used to specify 
       the world in which a local (the default) conjecture is to be proved. 
-\item A defined predicate {\tt \$in\_world} of type {\tt (\$world~*~\$o)~>~\$o} is used to 
+\item A defined predicate {\tt \$in\_world} of type {\tt (\$world\,*\,\$o)\,>\,\$o} is used to 
       specify the interpretations in the worlds.
 \end{packed_itemize}
 A Kripke interpretation-formula is a conjunction of 
@@ -529,7 +544,7 @@ Section~\ref{Verifiers}).
 The interpretation-formula does not provide this information because it underspecifies the 
 logic in use, e.g., it's usually not possible to see whether the interpretation exemplifies modal 
 system K or modal system S5 -- in both cases the interpretation could interpret the accessibility 
-relation as the equivalence relation (this is required for S5 but it is also OK for K).
+relation as an equivalence relation (this is required for S5 but it is also OK for K).
 The interpretation-formula is preceded by the necessary type declarations.
 
 The problem in Figure~\ref{NX0Example} can be made into a non-theorem by changing the 
@@ -538,10 +553,10 @@ Figure~\ref{NX0Kripke} shows the worlds and the first world's Tarskian interpret
 a Kripke (counter)model (the type declarations are omitted for brevity) of the modified problem.
 The second world is the same except that bananas are not rotten.
 Note that the quantification semantics of subformulae such as 
-{\tt ?~[DP:~d\_fruit]~:~(~DP~=~d\_apple~)}
+{\tt ?\,[DP:\,d\_fruit]\,:\,(\,DP\,=\,d\_apple\,)}
 is not classical but instead that of modal logic, i.e., the quantification is over the domain 
-values that exist in {\tt w1}, i.e., that subformulae requires the domain element {\tt d\_apple} 
-to exist in {\tt w1}.
+elements that exist in {\tt w1}, i.e., that subformulae requires that the domain element 
+{\tt d\_apple} exists in {\tt w1}.
 
 \begin{figure}[h!]
 \small
@@ -583,7 +598,7 @@ tff(fruity_worlds,interpretation,
         ( ( ! [F: fruit] : ? [DF: d_fruit] : F = d2fruit(DF)
           & ! [DF: d_fruit] : ( DF = d_apple | DF = d_banana )
           & $distinct(d_apple,d_banana)
-%----The terms are local
+%----The local domain elements
           & ? [DP: d_fruit] : ( DP = d_apple )
           & ? [DP: d_fruit] : ( DP = d_banana )
 %----The type-promotion is reflexive
@@ -781,7 +796,6 @@ Ongoing and future work includes:
 %--------------------------------------------------------------------------------------------------
 %----LNCS \bibliographystyle{splncs04}
 %----CEUR
-% \bibliographystyle{splncs04}
 \bibliography{Bibliography}
 %--------------------------------------------------------------------------------------------------
 \end{document}

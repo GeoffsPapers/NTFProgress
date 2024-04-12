@@ -499,8 +499,8 @@ cnf(c_0_18,negated_conjecture,
 The new TPTP format for interpretations, as used for writing Kripke interpretations, deserves 
 some introduction.
 Interpretations are captured in {\em interpretation-formulae}, which are written in TXF syntax.
-For interpretations of classical formulae the semantics is the standard classical semantics of 
-TXF.
+For interpretations of classical logic formulae the semantics is the standard classical semantics 
+of TXF.
 In contrast, for Kripke interpretations the semantics is that of modal logic enriched with four 
 new hybrid defined symbols:
 \begin{packed_itemize}
@@ -522,30 +522,26 @@ the accessibility relation,
 specification of the local world if any,
 and,
 for each world, its Tarskian interpretation (also in the new TPTP format for interpretations).
+The {\tt logic} specification of the problem is included to specify that the interpretation is
+for formulae in that logic.
+This information is needed when processing an interpretation, e.g., in verification (see 
+Section~\ref{Verifiers}). 
+The interpretation-formula does not provide this information because it underspecifies the 
+logic in use, e.g., it's usually not possible to see whether the interpretation exemplifies modal 
+system K or modal system S5 -- in both cases the interpretation could interpret the accessibility 
+relation as the equivalence relation (this is required for S5 but it is also OK for K).
 The interpretation-formula is preceded by the necessary type declarations.
 
-The problem in Figure~\ref{NX0Example} can be made into a non-theorem by changing the conjecture
-to
-\begin{verbatim}
-%----Try prove that is necessary for apples to be healthy and bananas 
-%----to be not rotten. Impossible because bananas are rotten locally.
-tff(not_true,conjecture,
-    ( {$necessary} @
-      (( healthy(apple)
-       & ~ rotten(banana) )) ) ).
-\end{verbatim}
+The problem in Figure~\ref{NX0Example} can be made into a non-theorem by changing the 
+{\tt \{\$possible\}} in the conjecture to {\tt \{\$necessary\}}.
 Figure~\ref{NX0Kripke} shows the worlds and the first world's Tarskian interpretation for 
-a Kripke (counter)model (the type declarations are omitted for brevity).
+a Kripke (counter)model (the type declarations are omitted for brevity) of the modified problem.
 The second world is the same except that bananas are not rotten.
-Note again that the quantification semantics of subformulae such as 
+Note that the quantification semantics of subformulae such as 
 {\tt ?~[DP:~d\_fruit]~:~(~DP~=~d\_apple~)}
-is not classical, but instead it is is over the domain values that exist in {\tt w1}.
-As such that subformulae requires the domain element {\tt d\_apple} to exist in {\tt w1}.
-The {\tt logic} specification of the problem is included as a comment because the
-interpretation-formula under specifies the logic, e.g., it's usually not possible to see whether
-the interpretation-formula exemplifies modal system K or modal system S5 -- in both cases the
-interpretation-formula could interpret the accessibility relation as equivalence (this is 
-required for S5 but it is also OK for K).
+is not classical but instead that of modal logic, i.e., the quantification is over the domain 
+values that exist in {\tt w1}, i.e., that subformulae requires the domain element {\tt d\_apple} 
+to exist in {\tt w1}.
 
 \begin{figure}[h!]
 \small
@@ -557,13 +553,12 @@ required for S5 but it is also OK for K).
 % tff(rotten_decl,type,rotten: fruit > $o).
 \begin{verbatim}
 %------------------------------------------------------------------------
-%----The logic specification was ...
-% tff(semantics,logic,
-%     $alethic_modal ==
-%       [ $domains == $constant,
-%         $designation == $rigid,
-%         $terms == $local,
-%         $modalities == $modal_system_M ] ).
+tff(semantics,logic,
+    $alethic_modal ==
+      [ $domains == $constant,
+        $designation == $rigid,
+        $terms == $local,
+        $modalities == $modal_system_M ] ).
 
 tff(d_fruit_type,type,d_fruit: $tType).
 tff(d2fruit_decl,type, d2fruit: d_fruit > fruit ).

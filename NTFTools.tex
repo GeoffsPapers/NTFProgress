@@ -190,30 +190,30 @@ The non-classical connectives of NTF have the form {\tt \{\$}{\em name}{\tt \}}.
 Examples are {\tt \{\$box\}} ($\Box$ in logic texts), {\tt \{\$dia\}} ($\Diamond$ in logic texts), 
 {\tt \{\$possible\}}, {\tt \{\$necessary\}}, {\tt \{\$obligatory\}}, {\tt \{\$permissible\}}, 
 {\tt \{\$knows\}}, {\tt \{\$believes\}}, etc.
-A connective may optionally be parameterized to reflect more complex non-classical connectives,
-e.g., in multi-modal logics where the modal operators are indexed~\cite{Bal98}, in epistemic logics
-where the knowledge operators can specify the agents under consideration~\cite{vDH15},
-and in dynamic logics~\cite{HKT00} where the connectives are parameterized with (complex) programs.
+A connective can be parameterized to reflect more complex non-classical connectives, e.g., in 
+multi-modal logics where the modal operators are indexed~\cite{Bal98}, in epistemic logics where 
+the knowledge operators can specify the agents under consideration~\cite{vDH15}, and in dynamic 
+logics~\cite{HKT00} where the connectives are parameterized with (complex) programs.
 The form is
-{\tt \verb|{|\$}{\em name}{\tt (}{\em param$_1$}{\tt ,}{\em \ldots}{\tt ,}{\em param$_n$}{\tt )}{\tt \verb|}|}.
+{\tt \{\$}{\em name}{\tt (}{\em param$_1$}{\tt ,}{\em \ldots}{\tt ,}{\em param$_n$}{\tt )}{\tt \}}.
 If the connective is indexed the index is given as the first parameter prefixed with a {\tt \#},
 e.g., {\tt \{\$knows(\#manuel)\}\,@\,(nothing)}\footnote{%
 As in \href{https://www.youtube.com/watch?v=ISD86-oM4Ow}{\tt www.youtube.com/watch?v=ISD86-oM4Ow}},
-so that the connective is {\tt \$knows(\#manuel)} (and not the connective {\tt \$knows} applied
+so that the connective is {\tt \{\$knows(\#manuel)\}} (and not the connective {\tt \$knows} applied
 to the index {\tt \#manuel}).
 All other parameters are key-value assignments, e.g., to list the agents of common knowledge the
 form might be {\tt \{\$common(\$agents:=[alice,bob,claire])\}}.
-There are also short form unary connectives for unparameterised $\Box$ and $\Diamond$: {\tt [.]} 
-and {\tt <.>}, e.g., $\Box p$ can be written {\tt [.]\,p}.
 
 In NXF the non-classical connectives are applied in a mixed 
-higher-order-applied/first-order-functional style, with the connectives applied to a
-{\tt ()}ed list of arguments.\footnote{%
+higher-order-applied/first-order-functional style, with the connectives applied using {\tt @}
+to a {\tt ()}ed list of arguments.\footnote{%
 This slightly unusual form was chosen to reflect the first-order functional style, and by making
 the application explicit the formulae can be parsed in Prolog -- a long standing principle of the
 TPTP languages~\cite{SZS04}.}
-In NHF the non-classical connectives are applied in usual higher-order style, with curried 
-function applications using the application operator {\tt @}.
+In NHF the non-classical connectives are applied using {\tt @} in usual higher-order style with 
+curried function applications.
+There are also short form unary connectives for unparameterised {\tt \{\$box\}} and 
+{\tt \{\$dia\}}: {\tt [.]} and {\tt <.>}, e.g., {\tt \{\$box\}\,@\,(p)} can be written {\tt [.]\,p}.
 Full specification of the connectives and their use in formulae is in the BNF
 % \footnotemark[\ref{BNF}] 
 starting at {\tt <nxf\_atom>} and {\tt <thf\_defined\_atomic>}.

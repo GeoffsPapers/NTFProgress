@@ -1,0 +1,81 @@
+Geoff's notes to Alex start ***
+
+----------------------- REVIEW 1 ---------------------
+
+----------------------- REVIEW 2 ---------------------
+When it comes to TSTP planned extension, the Leo3 proofs are in the language
+of the embedded problems (T*). The paper says:
+"With minimal effort the NX0/NH0 input can be grafted onto Leo-III’s proofs"
+Is this obvious - can you justify it shortly? For FOF problems that are solved
+in CNF the translation back would for example need deskolemization; similarly
+for higher-order problems embedded in first order provers the translation is
+non-trivial. What would need to be done here? The examples Fig 4 and 5 are
+clear but does it work for all connectives in all the non-classical logics
+considered?
+*** I have reworded that to escape the question, but maybe you'd like to sat something stronger?
+
+Minor: The IDV screenshots might need to be improved to display the long names
+without overlapping. (Maybe just run in on a problem with abbreviated names
+and say "pv = possible_fruit" etc in the caption?).
+*** I cold do this, but it does not reflect the reality. Do you think I should?
+
+----------------------- REVIEW 3 ---------------------
+Non classical logics require a specific syntax (new connectives) and specific axioms. The paper explains how the connectives can be expressed. Compared to [25], there are some simplifications for classical connectives. But it does not explains how the axioms are associated to a given logic: for instance, in Figure 2, the $modal_system_M is used for modalities. It would help the reader to have access to the axioms definition, which would also help in understanding the proof in Figure 4.
+*** Please check what I have written.
+
+In section 4, the TSTP solution for Kripke interpretation would probably benefit from a usual accessibility graph between worlds to explain the role of each new symbol.
+*** I do not understand the point. Help?
+
+The paper contains a proof (Figure 4) and counter-example (Figure 5) in the NX0 TPTP language that are IMHO hard to understand without explanations. There is no information about the meaning of esk1_2() in the proof. There is no information about the appearance of the new types d_fruit, d2fruit, d_apple and d_banana. The authors should at least explain how such model is obtained.
+It is interesting to have viewers to help understand the derivations made and the Kripke interpretation. A wrapper to access the worlds and accessibility relation will complete the set of available tools.
+*** Woof, these require a whole paper about theorem proving and model finding. Any suggestions on how we should respond?
+
+----------------------- REVIEW 4 ---------------------
+My biggest concern is that the new languages are (and I have to qualify here that this is highly subjective) quite complex: to read, parse, and I presume to write. This may well limit adoption: parsing (and term/formula representation) is a non-trivial aspect of legacy ATP systems that are not as easy to modify as LEO-III or the TPTP tools.
+Take for example the new binders. Is it really necessary to write
+{$knows(#manuel)} @ (nothing)
+? NXF has types, so one could imagine writing
+$knows(manuel, nothing)
+and being done with it - this probably still parses as Prolog and is considerably simpler in my view, re-using more existing syntax. This of course does not prevent shorthands such as [.] F for $box(F).
+*** That is a suggestion for a whole change to the language design, and I'm sure we had reasons for our decisions. I propose ignoring that comment - the horse has bolted. Agree?
+
+Or for the 'logic' header, each property could be spelled out separately rather than the (slightly obscure for at least this ATP author) lists-and-== syntax.
+% following file has alethic_modal semantics
+tff(constant_domains, logic, $property($domains, $constant)).
+tff(rigid_designation, logic, $property($designation, $rigid)).
+% etc
+*** Hmmm, should we allow the logic specification to be split over multiple "logic" formulae? It's possible, but maybe make life complicated for implementation - in Leo-III is it useful to get the whole logic specification in one go? Maybe you can respond?
+
+This complexity may well be absolutely necessary, but if so I would like it to be justified in this submission so I can understand the development process. (possibly it was already argued in [25], but I don't see it)
+*** As I said I'm sure we had our reasons, but I don't have the energy to reconstruct them. Do you?
+
+What is the use of the family name ('alethic_modal', Fig 1) in the logic specification? It's not referred to again.
+*** It's just an example, but now I have written a full explanation, which also responds to one of the other reviewer's comments.
+
+Hybrid defined symbols - what's hybrid about them? I'm also not immediately understanding the $local_world. It's a predicate true iff its argument is the "Skolem" world resulting from a conjecture of the form |= F? Or something else?
+*** This is your stuff
+
+"that the interpretation is for formulae in that logic" - _what_ the interpretation is?
+*** I don't understand - the suggestion makes no sense to me.
+
+TPTP has syntax for "distinct objects" - perhaps the worlds could be "worlds"?
+*** We did that at first, right? Why did we stop?
+
+I understand the argument for having NXF (NHF) as an extension of TXF (THF). However, in Figure 5, how do I determine which kind of quantification semantics is intended? If there is a 'logic' header it's modal quantifiation?
+*** This is your stuff
+
+ATP systems: you may not be aware of the SMT effort "Non-Classical Logics in Satisfiability Modulo Theories", TABLEAUX 2023. The authors invent their own syntax and semantics to express something similar in SMT-LIB.
+*** The abstract suggests that is not useful to us. Have you looked at it?
+
+----------------------- REVIEW 5 ---------------------
+
+----------------------- REVIEW 6 ---------------------
+
+p.2: Please spell out "()ed".
+*** I like "()ed" because "bracketed" could mean any form of bracket ... (), {}, [], <>.
+
+A table of TPTP languages (NTF, TXF, NX1, etc.) and its meaning would be helpful, also for the connectives ($possible, $necessary, etc.).
+*** I have added material about the hierarchy of languages. I do have a pretty picture, but I think it would overkill for this paper.
+
+p.8: Provide at least references for the range of modal logics: first-order quantified hybrid logics, public announcement logic, dyadic deontic logics, etc.
+*** Can you add one, please?

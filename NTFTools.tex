@@ -380,7 +380,10 @@ A TPTP annotated formula with the role \texttt{logic} is used for this, with a {
 specification} as the formula.
 A logic specification consists of a defined logic (family) name identified with a list of 
 properties\footnote{%
-The property names have been improved since their presentation in~\cite{SF+22}}.
+The property names have been improved since their presentation in~\cite{SF+22}}. It
+is assumed that there is a single logic specification specifying all relevant properties.
+However, if it should prove to be convenient in practice, future developments may allow the logic
+specification to be split over multiple annotated formulae with the role \texttt{logic}.
 The {\tt \$domains} property specifies whether each quantification domain is constant, varying,
 cumulative, or decreasing, across the accessibility relation.
 The {\tt \$designation} property specifies whether symbols are interpreted rigidly, i.e., 
@@ -400,11 +403,8 @@ Figure~\ref{NX0Example} includes a logic specification in NXF, which specifies:
 \item {\tt \$terms == \$local} - All terms are interpreted in the local world.
 \item {\tt \$modalities == \$modal\_system\_M} - This modality is built from:
       \begin{packed_itemize}
-      \item The necessitation rule of {\bf K}: If $A$ is the theorem of {\bf K} then so is $\Box A$
-      \item The distribution axiom of {\bf K}: 
+      \item The distribution axiom {\bf K}: 
             $\Box (A \rightarrow B) \rightarrow (\Box A \rightarrow \Box B)$
-      \item The {\bf D} axiom: $\Box A \rightarrow \Diamond A$, i.e., the accessibility relation is
-            serial.
       \item The {\bf M} axiom: $\Box A \rightarrow A$, i.e., the accessibility relation is 
             reflexive.
       \end{packed_itemize}
@@ -524,7 +524,8 @@ The NX0/NH0 input can be grafted onto Leo-III's proofs, and the details of the p
 underlying ATP added in.
 This has been done by hand for the proof of the problem in Figure~\ref{NX0Example},
 and the result is shown in Figure~\ref{NX0Proof} (the type declarations are omitted for brevity).
-In this case the underlying ATP system was E.
+In this case the underlying ATP system was E. Details on the proof construction process of Leo-III, 
+including a description of its proof search procedure, can be found in the literature~\cite{Ste18,SB21}
 
 \begin{figure}[h!]
 \centering
@@ -618,7 +619,7 @@ Interpretations are captured in {\em interpretation-formulae}, which are written
 For interpretations of classical logic formulae the semantics is the standard classical semantics 
 of TXF.
 In contrast, for Kripke interpretations the semantics is that of modal logic enriched with four 
-new hybrid defined symbols:
+new defined symbols:
 \begin{packed_itemize}
 \item A defined type {\tt \$world} is used for the worlds of the interpretation.
       Different constants of type {\tt \$world} are known to be unequal (but as yet no ATP 
@@ -626,10 +627,11 @@ new hybrid defined symbols:
       the {\tt \$distinct} predicate).
 \item A defined predicate {\tt \$accessible\_world} of type {\tt (\$world\,*\,\$world)\,>\,\$o}
       is used to specify the accessibility relation between worlds.
-\item A defined constant {\tt \$local\_world} of type {\tt \$world\,>\,\$o} is used to specify 
-      the world in which a local (the default) conjecture is to be proved. 
 \item A defined predicate {\tt \$in\_world} of type {\tt (\$world\,*\,\$o)\,>\,\$o} is used to 
       specify the interpretations in the worlds.
+\item A defined constant {\tt \$local\_world} of type {\tt \$world\,>\,\$o} is used to specify 
+      in which world an original conjecture was found not to hold (in case the interpretation
+      represents a counter-model).
 \end{packed_itemize}
 A Kripke interpretation-formula is a conjunction of 
 a specification of the worlds,
@@ -639,7 +641,7 @@ specification of the local world if any,
 and,
 for each world, its Tarskian interpretation (also in the new TPTP format for interpretations).
 The {\tt logic} specification of the problem is included to specify that the interpretation is
-for formulae in that logic.
+for formulae of that logic.
 This information is needed when processing an interpretation, e.g., in verification (see 
 Section~\ref{Verifiers}). 
 The interpretation-formula does not provide this information because it underspecifies the 
@@ -653,11 +655,15 @@ The problem in Figure~\ref{NX0Example} can be made into a non-theorem by changin
 Figure~\ref{NX0Kripke} shows the worlds and the first world's Tarskian interpretation for 
 a Kripke (counter)model (the type declarations are omitted for brevity) of the modified problem.
 The second world is the same except that bananas are not rotten.
-Note that the quantification semantics of subformulae such as 
+Note that the quantification semantics of subformulae in the second argument of the
+{\tt \$in\_world} predicate such as 
 {\tt ?\,[DP:\,d\_fruit]\,:\,(\,DP\,=\,d\_apple\,)}
-is not classical but instead that of modal logic, i.e., the quantification is over the domain 
-elements that exist in {\tt w1}, i.e., the subformulae requires that the domain element 
-{\tt d\_apple} exists in {\tt w1}.
+is not classical but instead that of modal logic with varying domains, i.e., the quantification
+is over the domain elements that exist in {\tt w1}, i.e., the subformulae requires that
+the domain element {\tt d\_apple} exists in {\tt w1}. Outside of the {\tt \$in\_world} predicate
+classical quantification is used. 
+The model was found -- after embedding to classical logic -- by Nitpick~\cite{BN10-ITP}, and manually transformed into TPTP format.
+
 
 \begin{figure}[h!]
 \small
@@ -763,7 +769,8 @@ NXF problems into TXF or THF, and NHF problems into THF~\cite{BP13,BR13,GSB17,GS
 By default NTFLET produces TX0 or TH0, but it can optionally produce polymorphic TH1 or TX1
 (which can be significantly shorter if the input problem contains many user types).
 Currently NTFLET supports a range of modal logics, a range of first-order quantified hybrid 
-logics, public announcement logic, and two different dyadic deontic logics.
+logics~\cite{DBLP:books/el/07/ArecesC07}, public announcement logic~\cite{vvK07,pacuit2013dynamic},
+and two different dyadic deontic logics~\cite{DBLP:journals/logcom/CarmoJ13,aaqvist2002deontic}.
 Any TPTP-compliant TXF/THF ATP system can be added as a backend to NTFLET to form an 
 ATP system for NXF/NHF (see Section~\ref{ATPSystems}).
 

@@ -148,7 +148,7 @@ last two years:
 \item The classical connectives $\Box$ and $\Diamond$ now have both long and short forms in the
       TPTP syntax (see Section~\ref{NonClassicalTPTPLanguages}).
 \item The property names in logic specifications have been improved, and another property
-      has been added (see Section~\ref{NonClassicalTPTPLanguages}).
+      has been added (see Section~\ref{LogicSpecification}).
 \item The collection of non-classical problems for the TPTP has made substantial progress
       (see Section~\ref{TPTP}).
 \item The ATP systems have been used to generate solutions for the problems, saved in the
@@ -300,9 +300,21 @@ There are also short form unary connectives for unparameterised {\tt \{\$box\}} 
 Full specification of the connectives and their use in formulae is in the BNF
 % \footnotemark[\ref{BNF}] 
 starting at {\tt <nxf\_atom>} and {\tt <thf\_defined\_atomic>}.
-Figure~\ref{NX0Example} shows an example NX0 problem in alethic modal logic (the {\tt semantics} 
-formula is explained next), and Figure~\ref{NH0Example} shows the axiom and conjecture formulae 
-in NH0.
+
+As non-classical problems' semantics are wrt many worlds, the roles of annotated formulae
+can have subroles, either {\tt local} or {\tt global}.
+By default the {\tt conjecture} is {\tt local}, i.e., is to be proved in only one local world, but
+can be given the subrole {\tt global} to indicate it is to be proved in all worlds.
+By default axioms are {\tt global}, i.e., hold in all worlds, but if the {\tt conjecture} is
+{\tt local} then axioms can have the subrole {\tt local} to indicate they hold in only the one 
+world where the conjecture is being proved.
+
+Figure~\ref{NX0Example} shows an example NX0 problem in alethic modal logic (the formulae
+with the {\tt logic} role is explained next), and Figure~\ref{NH0Example} shows the axiom and 
+conjecture formulae in NX0.
+Note how the conjecture defaults to being proved in one local world. 
+The {\tt rotten\_banana\_here} holds in only that local world while the other axioms hold in
+all worlds.
 
 \begin{figure}[h!]
 \small
@@ -371,6 +383,10 @@ thf(not_true,conjecture,
 \caption{NH0 formulae}
 \label{NH0Example}
 \end{figure}
+
+%--------------------------------------------------------------------------------------------------
+\subsection{Logic Specification}
+\label{LogicSpecification}
 
 In non-classical logics the same language can be used for formulae while different logics are 
 used for reasoning.
@@ -516,6 +532,10 @@ TPTP format might be future work, but providing those reduces the incentive for 
 to output TPTP format natively.
 That said~\ldots
 
+%--------------------------------------------------------------------------------------------------
+\subsection{TSTP Derivations}
+\label{TSTPDerivations}
+
 Leo-III outputs its proofs of NXF/NHF problems in TPTP format, but the proofs are in the language 
 of the embedded problems, i.e., TF0 or TH0 (see Section~\ref{Parsers}).
 It is also often the case that the proof includes one large step resulting from a call to an 
@@ -525,7 +545,8 @@ underlying ATP added in.
 This has been done by hand for the proof of the problem in Figure~\ref{NX0Example},
 and the result is shown in Figure~\ref{NX0Proof} (the type declarations are omitted for brevity).
 In this case the underlying ATP system was E. Details on the proof construction process of Leo-III, 
-including a description of its proof search procedure, can be found in the literature~\cite{Ste18,SB21}
+including a description of its proof search procedure, can be found in the literature~\cite{Ste18,
+SB21}
 
 \begin{figure}[h!]
 \centering
@@ -613,6 +634,10 @@ cnf(c_0_18,negated_conjecture,
 \label{NX0Proof}
 \end{figure}
 
+%--------------------------------------------------------------------------------------------------
+\subsection{TSTP Interpretations}
+\label{TSTPInterpretations}
+
 The new TPTP format for interpretations, as used for writing Kripke interpretations, deserves 
 some introduction.
 Interpretations are captured in {\em interpretation-formulae}, which are written in TXF syntax.
@@ -630,8 +655,8 @@ new defined symbols:
 \item A defined predicate {\tt \$in\_world} of type {\tt (\$world\,*\,\$o)\,>\,\$o} is used to 
       specify the interpretations in the worlds.
 \item A defined constant {\tt \$local\_world} of type {\tt \$world\,>\,\$o} is used to specify 
-      in which world an original conjecture was found not to hold (in case the interpretation
-      represents a counter-model).
+      the world in which the conjecture was found to not hold (in case the interpretation
+      represents a countermodel).
 \end{packed_itemize}
 A Kripke interpretation-formula is a conjunction of 
 a specification of the worlds,
@@ -769,8 +794,8 @@ NXF problems into TXF or THF, and NHF problems into THF~\cite{BP13,BR13,GSB17,GS
 By default NTFLET produces TX0 or TH0, but it can optionally produce polymorphic TH1 or TX1
 (which can be significantly shorter if the input problem contains many user types).
 Currently NTFLET supports a range of modal logics, a range of first-order quantified hybrid 
-logics~\cite{DBLP:books/el/07/ArecesC07}, public announcement logic~\cite{vvK07,pacuit2013dynamic},
-and two different dyadic deontic logics~\cite{DBLP:journals/logcom/CarmoJ13,aaqvist2002deontic}.
+logics~\cite{AtC07}, public announcement logic~\cite{vvK07,Pac13}, and two different dyadic 
+deontic logics~\cite{CJ13,Aqv02}.
 Any TPTP-compliant TXF/THF ATP system can be added as a backend to NTFLET to form an 
 ATP system for NXF/NHF (see Section~\ref{ATPSystems}).
 
@@ -787,6 +812,11 @@ MSPASS~\cite{HS00-TABLEAUX}.
 As noted in Section~\ref{Parsers}, translators have been implemented from the TPTP syntax to the 
 native syntaxes of KSP, nanoCoP-M, and MleanCoP, so that those systems can attempt the NX0 
 problems in the TPTP problem library.
+
+There have been successful efforts that translate/embed non-classical logic into a classical
+logic, and apply a classical logic ATP system~\cite{HV06,SH07,SS11,GSB17,EA+23} (i.e., including 
+that used in Leo-III).
+However, none of them (other than Leo-III) provide full generality.
 Leo-III can be used on NXF and NHF problems natively, via the embedding approach described 
 in Section~\ref{Parsers}.
 As noted there, any TPTP-compliant TXF/THF ATP system can replace Leo-III as a backend after

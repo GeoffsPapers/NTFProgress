@@ -50,8 +50,8 @@
 \copyrightyear{2024}
 \copyrightclause{Copyright for this paper by its authors.
   Use permitted under Creative Commons License Attribution 4.0 International (CC BY 4.0).}
-\conference{The 9th Workshop on Practical Aspects of Automated Reasoning,
-  July 2, 2024, Nancy, France}
+\conference{PAAR'24: 9th Workshop on Practical Aspects of Automated Reasoning,
+      July 2, 2024, Nancy, France}
 \title{TPTP World Infrastructure for Non-classical Logics}
 
 \author[1]{Alexander Steen}[%
@@ -281,9 +281,7 @@ The form is
 {\tt \{\$}{\em name}{\tt (}{\em param$_1$}{\tt ,}{\em \ldots}{\tt ,}{\em param$_n$}{\tt )}{\tt \}}.
 If the connective is indexed the index is given as the first parameter prefixed with a {\tt \#},
 e.g., {\tt \{\$knows(\#manuel)\}\,@\,(nothing)}\footnote{%
-As in \href{https://www.youtube.com/watch?v=ISD86-oM4Ow}{\tt www.youtube.com/watch?v=ISD86-oM4Ow}},
-so that the connective is {\tt \{\$knows(\#manuel)\}} (and not the connective {\tt \$knows} applied
-to the index {\tt \#manuel}).
+As in \href{https://www.youtube.com/watch?v=ISD86-oM4Ow}{\tt www.youtube.com/watch?v=ISD86-oM4Ow}}.
 All other parameters are key-value assignments, e.g., to list the agents of common knowledge the
 form might be {\tt \{\$common(\$agents:=[alice,bob,claire])\}}.
 
@@ -301,11 +299,29 @@ Full specification of the connectives and their use in formulae is in the BNF
 % \footnotemark[\ref{BNF}] 
 starting at {\tt <nxf\_atom>} and {\tt <thf\_defined\_atomic>}.
 
-As non-classical problems' semantics are wrt many worlds, the roles of annotated formulae
-can have subroles, either {\tt local} or {\tt global}.
-By default the {\tt conjecture} is {\tt local}, i.e., is to be proved in only one local world, but
+The TPTP language extension for non-classical connectives is arguably conservative: It only
+adds one uniform construct to both TXF and THF, i.e., {\tt \{\$}{\em name}{\tt (}{\em param$_1$}{\tt ,}{\em \ldots}{\tt ,}{\em param$_n$}{\tt )}{\tt \}}, that is uniformly applied to arguments using {\tt @}. Of course, a simpler
+and more concise syntax could be envisioned when only focusing on syntactically simple logics
+(like modal logics with its unary box operators). The presented extension however aims at providing
+a future-proof syntax that can represent logics with arbitrary $n$-ary operators that themselves
+may carry non-trivial parameters (like programs in PDL, or groups of agents in epistemic logic).
+In addition the syntax makes clear the distinction between object-logic and meta-logic syntax:
+An expression {\tt \{\$knows(\#manuel)\}\,@\,(nothing)} is clearly presented as the unary
+connective {\tt \{\$knows(\#manuel)\}} applied to one argument, rather than a binary expression
+{\tt \$knows} applied to the parameter (index) {\tt \#manuel} and the (only) real argument {\tt nothing}.
+This addresses at least two problems of the latter (syntactically somewhat simpler) approach:
+Non-classical connectives may have optional parameters (the latter approach would have connectives
+occuring with varying number of arguments), and expressions like {\tt \#manuel} are not part of
+the object-logic term/formula language, hence cannot be given a meaningful type (the latter approach
+would require to assign to them a type in order to be well-typed, as they occur at term-level).
+
+
+As non-classical consequence relations may be more complex than the standard classical one
+(e.g., in modal logics where consequence may be global or local), the roles of annotated formulae
+can have subroles (e.g., {\tt local} or {\tt global}).
+In modal logic problems, the {\tt conjecture} is {\tt local} by default, i.e., is to be proved in only one local world, but
 can be given the subrole {\tt global} to indicate it is to be proved in all worlds.
-By default axioms are {\tt global}, i.e., hold in all worlds, but if the {\tt conjecture} is
+By default axioms are {\tt global} in modal logics, i.e., hold in all worlds, but if the {\tt conjecture} is
 {\tt local} then axioms can have the subrole {\tt local} to indicate they hold in only the one 
 world where the conjecture is being proved.
 

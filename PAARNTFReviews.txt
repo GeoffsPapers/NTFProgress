@@ -12,6 +12,7 @@ In section 4, the TSTP solution for Kripke interpretation would probably benefit
 *** The model in Figure 5 has a trivial world structure      w1 --> w2
                                                             |_^     |_^
 *** so that can't be what the review wants. I'll do nothing.
++++ Ok.
 
 ----------------------- REVIEW 4 ---------------------
 My biggest concern is that the new languages are (and I have to qualify here that this is highly subjective) quite complex: to read, parse, and I presume to write. This may well limit adoption: parsing (and term/formula representation) is a non-trivial aspect of legacy ATP systems that are not as easy to modify as LEO-III or the TPTP tools.
@@ -28,6 +29,7 @@ This complexity may well be absolutely necessary, but if so I would like it to b
 +++ Because there are complicated logics with unary, binary, ternary, ..., operators that may have themselves non-trivial parameters (like a list of agents). Also because we wanted to distinguish term-level/meta-level syntax (as in  {$knows(#manuel)} @ (nothing) -- manuel is not a valid term/formula, and $knows is a parameterized unary operator (not a binary one!)). And (biggest and): It should be catch-all, of course it could be simpler if we just focus a few simple logics. The rest is Prolog compatibility. Should we add this argumentation?
 +++ I haven't added anything yet. Opinion?
 *** Yes, please do. It also answers the point above.
++++ Done. Ok?
 
 I'm also not immediately understanding the $local_world. It's a predicate true iff its argument is the "Skolem" world resulting from a conjecture of the form |= F? Or something else?
 *** This is your stuff
@@ -36,8 +38,10 @@ I'm also not immediately understanding the $local_world. It's a predicate true i
 *** I realized it makes sense to explain all that as part of the language, so I added a paragraph
 *** "As non-classical problems' semantics are wrt many worlds, the roles of annotated formulae ..."
 *** Please check it.
++++ I edited a bit: NCLs in general do not necessarily have worlds (but modal logic does, as a specific NCL example). So I reworded to make clear that this is $modal specific.
 
 *** I split off logic specification into a subsection, to improve the structure.
++++ I like it
 
 "that the interpretation is for formulae in that logic" - _what_ the interpretation is?
 *** I don't understand - the suggestion makes no sense to me
@@ -45,16 +49,19 @@ I'm also not immediately understanding the $local_world. It's a predicate true i
 *** Yes, now that local/global have been explained in advance.
 
 *** I split off derivations and interpretations into subsections, to improve the structure.
++++ I like it #2
 
 TPTP has syntax for "distinct objects" - perhaps the worlds could be "worlds"?
 *** We did that at first, right? Why did we stop?
 +++ Because distinct objects are of type $i.
 *** That could be mentioned in the explanation of the "complexity", requested above.
++++ It is not implicitly addressed (assuming the readers knows that Distinct objects are typed $i).
 
 ATP systems: you may not be aware of the SMT effort "Non-Classical Logics in Satisfiability Modulo Theories", TABLEAUX 2023. The authors invent their own syntax and semantics to express something similar in SMT-LIB.
 *** The abstract suggests that is not useful to us. Have you looked at it?
 +++ I have not looked at it. (~{$necessary} @ (cite & mention)).
 *** I added a bit of survey, including that one.
++++ Thanks, looks good!
 
 ----------------------- REVIEW 5 ---------------------
 
